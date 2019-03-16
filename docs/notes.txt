@@ -1,5 +1,5 @@
 serious game / gamification
-
+regarder s'il existe déjà jeu de société (sérieux) pour informatique
 
 
 Links
@@ -7,6 +7,7 @@ Links
 http://serious.gameclassification.com/
 http://www.ludoscience.com/FR/index.html
 https://www.serious-game.fr/
+https://www.ludorama.fr/les-mecaniques-de-jeu/
 
 
 
