@@ -1,4 +1,7 @@
--serious game / gamification
+﻿-serious game / gamification
+	Gamification, defined as “the use of video game elements in non-gaming systems to improve user experience and user engagement” (Deterding, Sicart, Nacke, O’Hara, & Dixon, 2011, p. 1)
+	Faire de l'informatique un jeu / faire un jeu qui fait apprendre l'informatique
+	gamification: appliquer les mecanismes d'un jeu sur une activité qui n'est pas un jeu
 -regarder s'il existe déjà jeu de société (sérieux) pour informatique
 -différents types de jeux de sociétés
 
@@ -10,5 +13,5 @@ http://www.ludoscience.com/FR/index.html
 https://www.serious-game.fr/
 https://www.ludorama.fr/les-mecaniques-de-jeu/
 https://fr.wikipedia.org/wiki/Jeu_de_soci%C3%A9t%C3%A9
-
+https://journals.openedition.org/sdj/
 
