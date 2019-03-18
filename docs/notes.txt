@@ -15,3 +15,6 @@ https://www.ludorama.fr/les-mecaniques-de-jeu/
 https://fr.wikipedia.org/wiki/Jeu_de_soci%C3%A9t%C3%A9
 https://journals.openedition.org/sdj/
 https://www.researchgate.net/profile/Richard_Landers2/publication/268632276_Developing_a_Theory_of_Gamified_Learning/links/54b940f90cf253b50e291145/Developing-a-Theory-of-Gamified-Learning.pdf
+
+Tools:
+https://machinations.io/
