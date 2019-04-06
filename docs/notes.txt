@@ -18,3 +18,9 @@ https://www.researchgate.net/profile/Richard_Landers2/publication/268632276_Deve
 
 Tools:
 https://machinations.io/
+
+Algos:
+construction algos: 
+	plusieurs algos possibles, suivant tirage
+	syntaxe: Blockly
+	sémantique: ???
