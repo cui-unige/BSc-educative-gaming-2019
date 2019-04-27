@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A03F2AD8226DB49D00B0E9F5 /* player.swift in Sources */ = {isa = PBXBuildFile; fileRef = A03F2AD7226DB49D00B0E9F5 /* player.swift */; };
+		A03F2ADA226DB9F600B0E9F5 /* board.swift in Sources */ = {isa = PBXBuildFile; fileRef = A03F2AD9226DB9F600B0E9F5 /* board.swift */; };
+		A03F2ADC226F0ACB00B0E9F5 /* action.swift in Sources */ = {isa = PBXBuildFile; fileRef = A03F2ADB226F0ACB00B0E9F5 /* action.swift */; };
 		A0D1FBA5224E515B00800CB8 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D1FBA4224E515B00800CB8 /* main.swift */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +26,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A03F2AD7226DB49D00B0E9F5 /* player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = player.swift; sourceTree = "<group>"; };
+		A03F2AD9226DB9F600B0E9F5 /* board.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = board.swift; sourceTree = "<group>"; };
+		A03F2ADB226F0ACB00B0E9F5 /* action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = action.swift; sourceTree = "<group>"; };
 		A0D1FBA1224E515B00800CB8 /* SeriousGame */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SeriousGame; sourceTree = BUILT_PRODUCTS_DIR; };
 		A0D1FBA4224E515B00800CB8 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -58,6 +64,9 @@
 			isa = PBXGroup;
 			children = (
 				A0D1FBA4224E515B00800CB8 /* main.swift */,
+				A03F2AD7226DB49D00B0E9F5 /* player.swift */,
+				A03F2AD9226DB9F600B0E9F5 /* board.swift */,
+				A03F2ADB226F0ACB00B0E9F5 /* action.swift */,
 			);
 			path = SeriousGame;
 			sourceTree = "<group>";
@@ -119,7 +128,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A03F2AD8226DB49D00B0E9F5 /* player.swift in Sources */,
+				A03F2ADC226F0ACB00B0E9F5 /* action.swift in Sources */,
 				A0D1FBA5224E515B00800CB8 /* main.swift in Sources */,
+				A03F2ADA226DB9F600B0E9F5 /* board.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
