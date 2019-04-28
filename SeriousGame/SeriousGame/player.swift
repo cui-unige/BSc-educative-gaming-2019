@@ -9,11 +9,13 @@
 import Foundation
 
 class Player {
+    var id: Int
     var nom: String
     var cartes: [String]
-    var position: String
+    var position: Int
     
-    init(nom: String, cartes: [String], position: String) {
+    init(id: Int, nom: String, cartes: [String], position: Int) {
+        self.id = id
         self.nom = nom
         self.cartes = cartes
         self.position = position

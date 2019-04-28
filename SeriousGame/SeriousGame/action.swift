@@ -10,7 +10,7 @@ import Foundation
 
 class Action {
     
-    func actionPlayer(currentPlayer: Player, listTiles: inout [String], nbVisibleTiles: inout Int, boardCase: [String], boardPos: [String], posPlayer: [String], H: Int, W: Int) -> (Player, [String]) {
+    func actionPlayer(currentPlayer: Player, listTiles: inout [String], nbVisibleTiles: inout Int, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], H: Int, W: Int) -> (Player, [String]) { // + boardInstruction
         print("\nSELECT YOUR ACTION:")
         print("1 - Draw a card\n2 - Move on the map\n3 - Explore the map\n4 - Link tiles")
         let actionSelected = readLine()
@@ -19,14 +19,16 @@ class Action {
                 print("No more tiles in the set !")
                 return (currentPlayer, [])
             } else {
-                let res = drawACard(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles)
-                listTiles = res.1
-                return (res.0, res.1)
+                let resDraw = drawACard(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles)
+                listTiles = resDraw.1
+                return (resDraw.0, resDraw.1)
             }
         } else if (actionSelected == "2") {
-            //Display.displayBoard(boardInit: <#T##[String]#>, displayPos: &<#T##[String]#>, H: <#T##Int#>, W: <#T##Int#>, posPlayer: <#T##[String]#>)
-            //return ("ok", []) tous les types
+            let resMove = movePlayer(currentPlayer: currentPlayer, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, H: H, W: W)
+            return (currentPlayer, resMove.2)
         }
+        // afficher le plateau
+        //Display.displayBoard(boardInit: <#T##[String]#>, displayPos: &<#T##[String]#>, H: <#T##Int#>, W: <#T##Int#>, posPlayer: <#T##[String]#>)
         return (currentPlayer, [])
     }
     
@@ -72,6 +74,41 @@ class Action {
             print("\nList of tiles unveiled: ", listUnveiledTiles)
             return (list, listUnveiledTiles)
         }
+    }
+    
+    func movePlayer(currentPlayer: Player, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], H: Int, W: Int) -> (Player, [String], [String]) {
+        print(" -->> ")
+        var availablePos: [Int] = []
+        let posP = currentPlayer.position
+        print(posP)
+        // remove last position
+        boardPos[posP] = boardPos[posP].replacingOccurrences(of: String(currentPlayer.id), with: "")
+        /*
+        if (boardPos[posP].last == " ") {
+            boardPos[posP] = boardPos[posP].replacingOccurrences(of: " ", with: "")
+        }
+        */
+        
+        // calculate available positions
+        availablePos.append(currentPlayer.position+1)
+        availablePos.append(currentPlayer.position-1)
+        availablePos.append(currentPlayer.position+W)
+        availablePos.append(currentPlayer.position-W)
+        
+        
+        // ask new position wanted
+        print("Select a position: ")
+        var cmpt = 0
+        for pos in availablePos {
+            print("\(cmpt+1) - Case numéro: \(pos)")
+            cmpt += 1
+        }
+        let posSelected = Int(readLine()!)!-1
+        
+         // set the new position
+        currentPlayer.position = availablePos[posSelected]
+        
+        return (currentPlayer, boardCase, boardPos)
     }
     
 }

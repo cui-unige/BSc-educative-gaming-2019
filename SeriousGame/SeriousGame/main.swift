@@ -38,12 +38,14 @@ func displayRules() {
 }
 
 
-func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Player, player4: Player, objective: [String], boardCase: [String], boardPos: [String], posPlayer: [String], H: Int, W: Int) {
+func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Player, player4: Player, objective: [String], boardCase: [String], boardPos: [String], posPlayer: [Int], H: Int, W: Int) {
     let arrayAllPlayers = [player1, player2, player3, player4]
     var turnPlayer = Int.random(in: 0...numberPlayer-1)
     var tmpListTiles = objective
     var visibleTiles = 3
-    
+    var tmpBoardPos = boardPos
+    var tmpBoardCase = boardCase
+    var tmpPosPlayer = posPlayer
     // Stop the game
     var gameFinished = false
     var countTurn = 0
@@ -62,10 +64,11 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
             gameFinished = true
         } else {
             print("\nIt's \(arrayAllPlayers[turnPlayer].nom)'s turn !")
-            let res = Actions.actionPlayer(currentPlayer: arrayAllPlayers[turnPlayer], listTiles: &tmpListTiles, nbVisibleTiles: &visibleTiles, boardCase: boardCase, boardPos: boardPos, posPlayer: posPlayer, H: H, W: W)
+            let res = Actions.actionPlayer(currentPlayer: arrayAllPlayers[turnPlayer], listTiles: &tmpListTiles, nbVisibleTiles: &visibleTiles, boardCase: &tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, H: H, W: W)
             print("res --> ", res.0.nom, res.0.cartes, res.1)
         }
         turnPlayer = (turnPlayer + 1) % numberPlayer
+        //Display.displayBoard(boardInit: &<#T##[String]#>, displayPos: &<#T##[String]#>, H: <#T##Int#>, W: <#T##Int#>, posPlayer: <#T##[Int]#>)
     }
 }
 
@@ -74,10 +77,10 @@ func main(nombreLine: Int, nombreCol: Int) {
     var infoPlayers = welcome()
     
     // Initialisation of players
-    let J1 = Player(nom: infoPlayers.1[0], cartes: [], position: String(((nombreLine*nombreCol)/2)-1))
-    let J2 = Player(nom: infoPlayers.1[1], cartes: [], position: String((nombreLine*nombreCol)/2))
-    let J3 = Player(nom: infoPlayers.1[2], cartes: [], position: String((nombreLine*nombreCol)/2))
-    let J4 = Player(nom: infoPlayers.1[3], cartes: [], position: String((nombreLine*nombreCol)/2))
+    let J1 = Player(id: 0, nom: infoPlayers.1[0], cartes: [], position: ((nombreLine*nombreCol)/2)-1)
+    let J2 = Player(id: 1, nom: infoPlayers.1[1], cartes: [], position: (nombreLine*nombreCol)/2)
+    let J3 = Player(id: 2, nom: infoPlayers.1[2], cartes: [], position: (nombreLine*nombreCol)/2)
+    let J4 = Player(id: 3, nom: infoPlayers.1[3], cartes: [], position: (nombreLine*nombreCol)/2)
     
     let arrayPosPlayer = [J1.position, J2.position, J3.position, J4.position]
     print("\ninitial players: ", J1.nom, J2.nom, J3.nom, J4.nom)
