@@ -64,11 +64,16 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
             gameFinished = true
         } else {
             print("\nIt's \(arrayAllPlayers[turnPlayer].nom)'s turn !")
-            let res = Actions.actionPlayer(currentPlayer: arrayAllPlayers[turnPlayer], listTiles: &tmpListTiles, nbVisibleTiles: &visibleTiles, boardCase: &tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, H: H, W: W)
-            print("res --> ", res.0.nom, res.0.cartes, res.1)
+            var res = Actions.actionPlayer(currentPlayer: arrayAllPlayers[turnPlayer], listTiles: &tmpListTiles, nbVisibleTiles: &visibleTiles, boardCase: &tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, H: H, W: W)
+            print("res player name:  --> ", res.0.nom)
+            print("res player deck:  --> ", res.0.cartes)
+            print("res stack tiles:  --> ", res.1)
+            print("res board num case:  --> ", res.2)
+            print("res board pos player:  --> ", res.3)
+            print("res array pos player:  --> ", res.4)
+            Display.displayBoard(boardInit: &res.2, displayPos: &res.3, H: H, W: W, posPlayer: &res.4)
         }
         turnPlayer = (turnPlayer + 1) % numberPlayer
-        //Display.displayBoard(boardInit: &<#T##[String]#>, displayPos: &<#T##[String]#>, H: <#T##Int#>, W: <#T##Int#>, posPlayer: <#T##[Int]#>)
     }
 }
 
@@ -82,7 +87,11 @@ func main(nombreLine: Int, nombreCol: Int) {
     let J3 = Player(id: 2, nom: infoPlayers.1[2], cartes: [], position: (nombreLine*nombreCol)/2)
     let J4 = Player(id: 3, nom: infoPlayers.1[3], cartes: [], position: (nombreLine*nombreCol)/2)
     
-    let arrayPosPlayer = [J1.position, J2.position, J3.position, J4.position]
+    let tmpArrayPosPlayer = [J1.position, J2.position, J3.position, J4.position]
+    var arrayPosPlayer: [Int] = []
+    for i in 0...infoPlayers.0-1 {
+        arrayPosPlayer.append(tmpArrayPosPlayer[i])
+    }
     print("\ninitial players: ", J1.nom, J2.nom, J3.nom, J4.nom)
     
     // Display rules for players
@@ -91,11 +100,10 @@ func main(nombreLine: Int, nombreCol: Int) {
     // Initialise the board
     var boardd = Array(repeating: "0", count: nombreLine*nombreCol)
     var boardP = Array(repeating: "", count: nombreLine*nombreCol)
-    let resDisplay = Display.displayBoard(boardInit: &boardd, displayPos: &boardP, H: nombreLine, W: nombreCol, posPlayer: arrayPosPlayer)
+    let resDisplay = Display.displayBoard(boardInit: &boardd, displayPos: &boardP, H: nombreLine, W: nombreCol, posPlayer: &arrayPosPlayer)
     
     // Initialise objective - set of tiles
     let listTiles = ["tuile1","tuile2","tuile3","tuile4","tuile5","tuile6"]
-    print(resDisplay)
     
     // Start the game
     beginGame(numberPlayer: infoPlayers.0, player1: J1, player2: J2, player3: J3, player4: J4, objective: listTiles, boardCase: resDisplay.0, boardPos: resDisplay.1, posPlayer: resDisplay.2, H: resDisplay.3, W: resDisplay.4)

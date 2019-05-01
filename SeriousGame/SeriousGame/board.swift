@@ -60,11 +60,11 @@ class Board {
         }
     }
     
-    func displayPosPlayer(n: Int,  displayPos: inout [String], currentPosPlayer: [Int], tmp: inout Int) {
+    func displayPosPlayer(n: Int,  displayPos: inout [String], currentPosPlayer: inout [Int], tmp: inout Int) {
         for _ in 0...n-1 {
-            for p in 0...3 {
+            for p in 0...currentPosPlayer.count-1 {
                 if (currentPosPlayer[p] == tmp) {
-                    displayPos[tmp] += String(p) + " "
+                    displayPos[tmp] = String(p) + " "
                 }
             }
             if (displayPos[tmp].count == 0) {
@@ -87,22 +87,23 @@ class Board {
         }
     }
 
-    func displayBoard(boardInit: inout [String], displayPos: inout [String], H: Int, W: Int, posPlayer: [Int]) -> ([String], [String], [Int], Int, Int) {
+    func displayBoard(boardInit: inout [String], displayPos: inout [String], H: Int, W: Int, posPlayer: inout [Int]) -> ([String], [String], [Int], Int, Int) {
         var tmp = 0
         var tmp2 = 0
         var boardTmp = boardInit
         var boardPosTmp = displayPos
-        
-        
+        var posPlayerTmp = posPlayer
+        print("1: ",boardPosTmp)
         for _ in 0...((boardInit.count)/W)-1 {
             lineBoard(n: W)
             displayNumCase(n: W, displayCase: &boardTmp, tmp: &tmp)
             lineCompl(n: W, action: "JUMP")
             puts("|")
-            displayPosPlayer(n: W,  displayPos: &boardPosTmp, currentPosPlayer: posPlayer, tmp: &tmp2)
+            displayPosPlayer(n: W,  displayPos: &boardPosTmp, currentPosPlayer: &posPlayerTmp, tmp: &tmp2)
             puts("|")
         }
         lineBoard(n: W)
+        print("4: ",boardPosTmp)
         return (boardTmp, boardPosTmp, posPlayer, H, W)
     }
 }

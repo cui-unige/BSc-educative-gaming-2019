@@ -10,26 +10,29 @@ import Foundation
 
 class Action {
     
-    func actionPlayer(currentPlayer: Player, listTiles: inout [String], nbVisibleTiles: inout Int, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], H: Int, W: Int) -> (Player, [String]) { // + boardInstruction
+    // return (Player info), (list of tiles in stack not selected), (board num of case), (board position of player) , (array of pos player (for display)), ...
+    func actionPlayer(currentPlayer: Player, listTiles: inout [String], nbVisibleTiles: inout Int, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], H: Int, W: Int) -> (Player, [String], [String], [String], [Int]) { // + boardInstruction
         print("\nSELECT YOUR ACTION:")
         print("1 - Draw a card\n2 - Move on the map\n3 - Explore the map\n4 - Link tiles")
         let actionSelected = readLine()
         if (actionSelected == "1") {
             if (listTiles == []) {
                 print("No more tiles in the set !")
-                return (currentPlayer, [])
+                return (currentPlayer, [], boardCase, boardPos, posPlayer)
             } else {
                 let resDraw = drawACard(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles)
                 listTiles = resDraw.1
-                return (resDraw.0, resDraw.1)
+                return (resDraw.0, resDraw.1, boardCase, boardPos, posPlayer)
             }
         } else if (actionSelected == "2") {
             let resMove = movePlayer(currentPlayer: currentPlayer, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, H: H, W: W)
-            return (currentPlayer, resMove.2)
+            print("boardPos: ", resMove.2)
+            print("posPlayer: ", resMove.3)
+            return (resMove.0, listTiles, resMove.1, resMove.2, resMove.3)
         }
-        // afficher le plateau
-        //Display.displayBoard(boardInit: <#T##[String]#>, displayPos: &<#T##[String]#>, H: <#T##Int#>, W: <#T##Int#>, posPlayer: <#T##[String]#>)
-        return (currentPlayer, [])
+        
+        // case player skip action selected (miss click, etc ...)
+        return (currentPlayer, listTiles, boardCase, boardPos, posPlayer)
     }
     
     func drawACard(currentPlayer: Player, listTiles: inout [String], nbVisibleTiles: inout Int) -> (Player, [String]) {
@@ -76,18 +79,13 @@ class Action {
         }
     }
     
-    func movePlayer(currentPlayer: Player, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], H: Int, W: Int) -> (Player, [String], [String]) {
+    func movePlayer(currentPlayer: Player, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], H: Int, W: Int) -> (Player, [String], [String], [Int]) {
         print(" -->> ")
         var availablePos: [Int] = []
         let posP = currentPlayer.position
         print(posP)
         // remove last position
-        boardPos[posP] = boardPos[posP].replacingOccurrences(of: String(currentPlayer.id), with: "")
-        /*
-        if (boardPos[posP].last == " ") {
-            boardPos[posP] = boardPos[posP].replacingOccurrences(of: " ", with: "")
-        }
-        */
+        boardPos[posP] = boardPos[posP].replacingOccurrences(of: "\(String(currentPlayer.id)) ", with: "")
         
         // calculate available positions
         availablePos.append(currentPlayer.position+1)
@@ -107,8 +105,10 @@ class Action {
         
          // set the new position
         currentPlayer.position = availablePos[posSelected]
+        boardPos[availablePos[posSelected]] = boardPos[availablePos[posSelected]] + String(currentPlayer.id) + " "
+        posPlayer[currentPlayer.id] = currentPlayer.position
         
-        return (currentPlayer, boardCase, boardPos)
+        return (currentPlayer, boardCase, boardPos, posPlayer)
     }
     
 }
