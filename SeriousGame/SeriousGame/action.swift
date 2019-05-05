@@ -11,28 +11,31 @@ import Foundation
 class Action {
     
     // return (Player info), (list of tiles in stack not selected), (board num of case), (board position of player) , (array of pos player (for display)), ...
-    func actionPlayer(currentPlayer: Player, listTiles: inout [String], nbVisibleTiles: inout Int, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], H: Int, W: Int) -> (Player, [String], [String], [String], [Int]) { // + boardInstruction
+    func actionPlayer(currentPlayer: Player, listTiles: inout [String], nbVisibleTiles: inout Int, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], boardInstruction: inout [String], instrPlayer: inout [String], H: Int, W: Int) -> (Player, [String], [String], [String], [Int], [String], [String]) {
         print("\nSELECT YOUR ACTION:")
         print("1 - Draw a card\n2 - Move on the map\n3 - Explore the map\n4 - Link tiles")
         let actionSelected = readLine()
         if (actionSelected == "1") {
             if (listTiles == []) {
                 print("No more tiles in the set !")
-                return (currentPlayer, [], boardCase, boardPos, posPlayer)
+                return (currentPlayer, [], boardCase, boardPos, posPlayer, boardInstruction, instrPlayer)
             } else {
                 let resDraw = drawACard(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles)
                 listTiles = resDraw.1
-                return (resDraw.0, resDraw.1, boardCase, boardPos, posPlayer)
+                return (resDraw.0, resDraw.1, boardCase, boardPos, posPlayer, boardInstruction, instrPlayer)
             }
         } else if (actionSelected == "2") {
             let resMove = movePlayer(currentPlayer: currentPlayer, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, H: H, W: W)
             print("boardPos: ", resMove.2)
             print("posPlayer: ", resMove.3)
-            return (resMove.0, listTiles, resMove.1, resMove.2, resMove.3)
+            return (resMove.0, listTiles, resMove.1, resMove.2, resMove.3, boardInstruction, instrPlayer)
+        } else if (actionSelected == "3") {
+            let resExplore = exploreMap(currentPlayer: currentPlayer, boardCase: &boardCase, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, H: H, W: W)
+            return (resExplore.0, listTiles, resExplore.1, boardPos, posPlayer, resExplore.2, resExplore.3)
         }
         
         // case player skip action selected (miss click, etc ...)
-        return (currentPlayer, listTiles, boardCase, boardPos, posPlayer)
+        return (currentPlayer, listTiles, boardCase, boardPos, posPlayer, boardInstruction, instrPlayer)
     }
     
     func drawACard(currentPlayer: Player, listTiles: inout [String], nbVisibleTiles: inout Int) -> (Player, [String]) {
@@ -88,11 +91,24 @@ class Action {
         boardPos[posP] = boardPos[posP].replacingOccurrences(of: "\(String(currentPlayer.id)) ", with: "")
         
         // calculate available positions
-        availablePos.append(currentPlayer.position+1)
-        availablePos.append(currentPlayer.position-1)
-        availablePos.append(currentPlayer.position+W)
-        availablePos.append(currentPlayer.position-W)
-        
+        var leftside: [Int] = []
+        var rightside: [Int] = []
+        if !(0...W ~= currentPlayer.position) {
+            availablePos.append(currentPlayer.position-W)
+        }
+        if !((H*W)-W...(H*W)-1 ~= currentPlayer.position) {
+            availablePos.append(currentPlayer.position+W)
+        }
+        for i in 0...H-1 {
+            leftside.append(i*W)
+            rightside.append(((i+1)*W)-1)
+        }
+        if !(leftside.contains(currentPlayer.position)) {
+            availablePos.append(currentPlayer.position-1)
+        }
+        if !(rightside.contains(currentPlayer.position)) {
+            availablePos.append(currentPlayer.position+1)
+        }
         
         // ask new position wanted
         print("Select a position: ")
@@ -111,4 +127,30 @@ class Action {
         return (currentPlayer, boardCase, boardPos, posPlayer)
     }
     
+    
+    func exploreMap(currentPlayer: Player, boardCase: inout [String], boardInstruction: inout [String], instrPlayer: inout [String], H: Int, W: Int) -> (Player, [String], [String], [String]) {
+        print("Your set of tile: ", currentPlayer.cartes)
+        print("You are on the case: ", currentPlayer.position)
+        print("board instr: --> ", boardInstruction)
+        
+        // ask which tile is wanted for this position
+        if (currentPlayer.cartes.isEmpty) {
+            print("Your set of tile is empty ! You can't explore the map before drowing a new tile !")
+            // come back to select action
+        } else {
+            print("Select a tile: ")
+            var cmpt = 0
+            for tile in currentPlayer.cartes {
+                print("\(cmpt+1) - ", tile)
+                cmpt += 1
+            }
+            let tileSelected = Int(readLine()!)!-1
+            
+            // insert the tile in the instr's board
+            boardInstruction[currentPlayer.position] = currentPlayer.cartes[tileSelected]
+            currentPlayer.cartes.remove(at: tileSelected)
+        }
+        
+        return (currentPlayer, boardCase, boardInstruction, instrPlayer)
+    }
 }

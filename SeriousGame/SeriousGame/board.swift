@@ -19,11 +19,11 @@ class Board {
 
     func lineCompl(n: Int, action: String) {
         if (action == "NOJUMP") {
-            for _ in 1...2 {
+            for _ in 1...1 {
+                puts("|");
                 for _ in 1...n {
                     print("|                ", terminator: "");
                 }
-                puts("|");
             }
         } else {
             for _ in 1...3 {
@@ -33,6 +33,7 @@ class Board {
                 }
             }
         }
+        puts("|")
     }
     
     func linePlayer(n: Int) {
@@ -46,16 +47,7 @@ class Board {
     func displayNumCase(n: Int, displayCase: inout [String], tmp: inout Int) {
         for _ in 0...n-1 {
             displayCase[tmp] = String(tmp)
-            if (displayCase[tmp].count == 1) {
-                let s = String(repeating: " ", count: 14)
-                print("|"+s, displayCase[tmp], terminator: "")
-            } else if (displayCase[tmp].count == 2) {
-                let s = String(repeating: " ", count: 13)
-                print("|"+s, displayCase[tmp], terminator: "")
-            } else if (displayCase[tmp].count == 3) {
-                let s = String(repeating: " ", count: 12)
-                    print("|"+s, displayCase[tmp], terminator: "")
-            }
+            spaceWide(array: &displayCase, index: &tmp)
             tmp += 1
         }
     }
@@ -67,43 +59,51 @@ class Board {
                     displayPos[tmp] = String(p) + " "
                 }
             }
-            if (displayPos[tmp].count == 0) {
-                let s = String(repeating: " ", count: 15)
-                print("|"+s, displayPos[tmp], terminator: "")
-            } else if (displayPos[tmp].count == 2) {
-                let s = String(repeating: " ", count: 13)
-                print("|"+s, displayPos[tmp], terminator: "")
-            } else if (displayPos[tmp].count == 4) {
-                let s = String(repeating: " ", count: 11)
-                print("|"+s, displayPos[tmp], terminator: "")
-            } else if (displayPos[tmp].count == 6) {
-                let s = String(repeating: " ", count: 9)
-                print("|"+s, displayPos[tmp], terminator: "")
-            } else if (displayPos[tmp].count == 8) {
-                let s = String(repeating: " ", count: 7)
-                print("|"+s, displayPos[tmp], terminator: "")
-            }
+            spaceWide(array: &displayPos, index: &tmp)
             tmp += 1
         }
     }
+    
+    // currentPosPlayer = tab des instr appened
+    func displayInstructionPlayer(n: Int,  displayInstr: inout [String], currentInstrPlayer: inout [String], tmp: inout Int) {
+        for _ in 0...n-1 {
+            spaceWide(array: &displayInstr, index: &tmp)
+            tmp += 1
+        }
+    }
+    
+    // complete empty space to dislay every types of board
+    func spaceWide(array: inout [String], index: inout Int) {
+        let size = array[index].count
+        if (size <= 15) {
+            let s = String(repeating: " ", count: 15-size)
+            print("|"+s, array[index], terminator: "")
+        } else {
+            print("ERROR DEV")
+        }
+    }
 
-    func displayBoard(boardInit: inout [String], displayPos: inout [String], H: Int, W: Int, posPlayer: inout [Int]) -> ([String], [String], [Int], Int, Int) {
+    func displayBoard(boardInit: inout [String], displayPos: inout [String], displayInstruction: inout [String], H: Int, W: Int, posPlayer: inout [Int], instrPlayer: inout [String]) -> ([String], [String], [Int], Int, Int, [String], [String]) {
         var tmp = 0
         var tmp2 = 0
+        var tmp3 = 0
         var boardTmp = boardInit
         var boardPosTmp = displayPos
+        var boardInstructionTmp = displayInstruction
         var posPlayerTmp = posPlayer
+        var instrPlayerTmp = instrPlayer
         print("1: ",boardPosTmp)
         for _ in 0...((boardInit.count)/W)-1 {
             lineBoard(n: W)
             displayNumCase(n: W, displayCase: &boardTmp, tmp: &tmp)
-            lineCompl(n: W, action: "JUMP")
-            puts("|")
+            lineCompl(n: W, action: "NOJUMP")
+            displayInstructionPlayer(n: W,  displayInstr: &boardInstructionTmp, currentInstrPlayer: &instrPlayerTmp, tmp: &tmp3)
+            lineCompl(n: W, action: "NOJUMP")
             displayPosPlayer(n: W,  displayPos: &boardPosTmp, currentPosPlayer: &posPlayerTmp, tmp: &tmp2)
             puts("|")
         }
         lineBoard(n: W)
         print("4: ",boardPosTmp)
-        return (boardTmp, boardPosTmp, posPlayer, H, W)
+        return (boardTmp, boardPosTmp, posPlayer, H, W, boardInstructionTmp, instrPlayer)
     }
 }
