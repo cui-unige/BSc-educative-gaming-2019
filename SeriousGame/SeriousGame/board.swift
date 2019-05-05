@@ -52,13 +52,22 @@ class Board {
         }
     }
     
-    func displayPosPlayer(n: Int,  displayPos: inout [String], currentPosPlayer: inout [Int], tmp: inout Int) {
+    // display starting pos of players
+    func displayPosBegin(n: Int,  displayPos: inout [String], currentPosPlayer: inout [Int], tmp: inout Int) {
         for _ in 0...n-1 {
             for p in 0...currentPosPlayer.count-1 {
                 if (currentPosPlayer[p] == tmp) {
-                    displayPos[tmp] = String(p) + " "
+                    displayPos[tmp] = String(p+1) + " "
                 }
             }
+            spaceWide(array: &displayPos, index: &tmp)
+            tmp += 1
+        }
+    }
+    
+    // display the position of the players during the game
+    func displayPosPlayer(n: Int,  displayPos: inout [String], currentPosPlayer: inout [Int], tmp: inout Int) {
+        for _ in 0...n-1 {
             spaceWide(array: &displayPos, index: &tmp)
             tmp += 1
         }
@@ -83,7 +92,7 @@ class Board {
         }
     }
 
-    func displayBoard(boardInit: inout [String], displayPos: inout [String], displayInstruction: inout [String], H: Int, W: Int, posPlayer: inout [Int], instrPlayer: inout [String]) -> ([String], [String], [Int], Int, Int, [String], [String]) {
+    func displayBoard(boardInit: inout [String], displayPos: inout [String], displayInstruction: inout [String], H: Int, W: Int, posPlayer: inout [Int], instrPlayer: inout [String], bd: inout Bool) -> ([String], [String], [Int], Int, Int, [String], [String]) {
         var tmp = 0
         var tmp2 = 0
         var tmp3 = 0
@@ -92,18 +101,20 @@ class Board {
         var boardInstructionTmp = displayInstruction
         var posPlayerTmp = posPlayer
         var instrPlayerTmp = instrPlayer
-        print("1: ",boardPosTmp)
         for _ in 0...((boardInit.count)/W)-1 {
             lineBoard(n: W)
             displayNumCase(n: W, displayCase: &boardTmp, tmp: &tmp)
             lineCompl(n: W, action: "NOJUMP")
             displayInstructionPlayer(n: W,  displayInstr: &boardInstructionTmp, currentInstrPlayer: &instrPlayerTmp, tmp: &tmp3)
             lineCompl(n: W, action: "NOJUMP")
-            displayPosPlayer(n: W,  displayPos: &boardPosTmp, currentPosPlayer: &posPlayerTmp, tmp: &tmp2)
+            if (bd) {
+                displayPosBegin(n: W, displayPos: &boardPosTmp, currentPosPlayer: &posPlayerTmp, tmp: &tmp2)
+            } else {
+                displayPosPlayer(n: W,  displayPos: &boardPosTmp, currentPosPlayer: &posPlayerTmp, tmp: &tmp2)
+            }
             puts("|")
         }
         lineBoard(n: W)
-        print("4: ",boardPosTmp)
         return (boardTmp, boardPosTmp, posPlayer, H, W, boardInstructionTmp, instrPlayer)
     }
 }

@@ -12,6 +12,7 @@ class Action {
     
     // return (Player info), (list of tiles in stack not selected), (board num of case), (board position of player) , (array of pos player (for display)), ...
     func actionPlayer(currentPlayer: Player, listTiles: inout [String], nbVisibleTiles: inout Int, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], boardInstruction: inout [String], instrPlayer: inout [String], H: Int, W: Int) -> (Player, [String], [String], [String], [Int], [String], [String]) {
+        print("Your set of tiles: ", currentPlayer.cartes)
         print("\nSELECT YOUR ACTION:")
         print("1 - Draw a card\n2 - Move on the map\n3 - Explore the map\n4 - Link tiles")
         let actionSelected = readLine()
@@ -88,7 +89,7 @@ class Action {
         let posP = currentPlayer.position
         print(posP)
         // remove last position
-        boardPos[posP] = boardPos[posP].replacingOccurrences(of: "\(String(currentPlayer.id)) ", with: "")
+        boardPos[posP] = boardPos[posP].replacingOccurrences(of: "\(String(currentPlayer.id+1)) ", with: "")
         
         // calculate available positions
         var leftside: [Int] = []
@@ -121,7 +122,7 @@ class Action {
         
          // set the new position
         currentPlayer.position = availablePos[posSelected]
-        boardPos[availablePos[posSelected]] = boardPos[availablePos[posSelected]] + String(currentPlayer.id) + " "
+        boardPos[availablePos[posSelected]] = boardPos[availablePos[posSelected]] + String(currentPlayer.id+1) + " "
         posPlayer[currentPlayer.id] = currentPlayer.position
         
         return (currentPlayer, boardCase, boardPos, posPlayer)
@@ -147,10 +148,15 @@ class Action {
             let tileSelected = Int(readLine()!)!-1
             
             // insert the tile in the instr's board
-            boardInstruction[currentPlayer.position] = currentPlayer.cartes[tileSelected]
-            currentPlayer.cartes.remove(at: tileSelected)
+            // a tile can be posed only if no tile is already posed
+            if !(boardInstruction[currentPlayer.position].isEmpty) {
+                print("There is already a tile in this position !")
+                // return to select action
+            } else {
+                boardInstruction[currentPlayer.position] = currentPlayer.cartes[tileSelected]
+                currentPlayer.cartes.remove(at: tileSelected)
+            }
         }
-        
         return (currentPlayer, boardCase, boardInstruction, instrPlayer)
     }
 }
