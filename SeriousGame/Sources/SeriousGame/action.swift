@@ -10,6 +10,8 @@ import Foundation
 
 class Action {
     
+    let Interp = Interpretor()
+    
     // return (Player info), (list of tiles in stack not selected), (board num of case), (board position of player) , (array of pos player (for display)), ...
     func actionPlayer(currentPlayer: Player, listTiles: inout [String], nbVisibleTiles: inout Int, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], boardInstruction: inout [String], instrPlayer: inout [String], H: Int, W: Int) -> (Player, [String], [String], [String], [Int], [String], [String]) {
         print("Your set of tiles: ", currentPlayer.cartes)
@@ -153,8 +155,14 @@ class Action {
                 print("There is already a tile in this position !")
                 // return to select action
             } else {
-                boardInstruction[currentPlayer.position] = currentPlayer.cartes[tileSelected]
-                currentPlayer.cartes.remove(at: tileSelected)
+                // test if pass the interpretor
+                let resInter = Interp.checkTile()
+                if (resInter) {
+                    boardInstruction[currentPlayer.position] = currentPlayer.cartes[tileSelected]
+                    currentPlayer.cartes.remove(at: tileSelected)
+                } else {
+                    print("You can't put this tile on this pos. It doesn't respect the semantic !")
+                }
             }
         }
         return (currentPlayer, boardCase, boardInstruction, instrPlayer)

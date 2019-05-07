@@ -146,4 +146,4 @@ func main(nombreLine: Int, nombreCol: Int) {
 }
 
 // Start program
-main(nombreLine: 9, nombreCol: 9)
+main(nombreLine: 7, nombreCol: 12)
