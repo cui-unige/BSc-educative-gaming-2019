@@ -13,7 +13,7 @@ You need to install these things below to be able to run the project on your loc
 
 * macOS High Sierra Version 10.13.6 or later
 * Xcode Version 10.1 or later (Terminal Xcode)
-* Swift Version 4 or 5 ? (Terminal)
+* Swift Version 4 or 5  (Terminal)
 
 ### Installing
 
@@ -34,7 +34,7 @@ git checkout devInf
 * Enter in the folder of the game
 
 ```
-cd SeriousGame/SeriousGame/
+cd SeriousGame/
 ```
 
 You have now access of every files of the implementation. 
@@ -45,7 +45,8 @@ You have now access of every files of the implementation.
 You can run the game with this following command 
 
 ```
-swift main.swift
+swift build
+swift run
 ```
 
 ### Run the game with Xcode
@@ -54,11 +55,9 @@ You can also run the game with xcode using the integrated console
 
 You have to be in the folder which contains the Xcode project file *SeriousGame.xcodeproj*
 
-```
-cd ..
-```
+To do this follow the *Installing* part
 
-And then open the Xcode project with the command below
+Then open the Xcode project with the command below
 
 ```
 open -a Xcode SeriousGame.xcodeproj/
