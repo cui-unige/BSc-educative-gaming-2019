@@ -52,14 +52,6 @@ def fill():
 
 
 # Objectifs (algos)
-
-"""Compte à rebours"""
-#while sans liste (facile)
-def countdown_1(x):
-    while x != 0:
-        print(x)
-        x = x-1
-    return 'Décollage !!!'
         
 #for avec liste (moyen/difficile)
 ##def countdown_2(l):
@@ -79,8 +71,6 @@ def countdown_1(x):
 ##        countdown_3(x)
 ##    return 'Décollage !!!'
 
-"""gérer les membres"""
-
 #ajouter passagers (facile)
 ##def add_team_1(p):
 ##    while p != set():
@@ -97,7 +87,18 @@ def countdown_1(x):
 ##        else: push(team,m)
 ##    return  team ,'prêts pour le décollage'
 
+"""Compte à rebours"""
+#while sans liste (facile)
+def countdown_1(x):
+    while x != 0:
+        print(x)
+        x = x-1
+    return 'Décollage !!!'
+
+"""gérer les membres"""
+
 #Vérifier nombre de passagers(moyen)
+
 def check_team(team):
     global n
     for i in team:
@@ -122,7 +123,7 @@ def check_fuel():
 cur_dist = 0
 state = ''
 def auto_pilot():
-    if cur_dist <= (1/3)*dist_lune:
+    if cur_dist < (1/3)*dist_lune:
         state = 'take off'
     elif cur_dist > (2/3)*dist_lune:
         state = 'landing'
@@ -133,7 +134,7 @@ def auto_pilot():
 team = ['Alice', 'Bob', 'Alan', 'Lena', 'Edgar']
 def check_task():
     for i in team:
-        if check(i) = 'check':
+        if check(i) == 'check':
             continue
         else:
             return 'tasks uncompleted'
