@@ -29,8 +29,6 @@ class Action {
             }
         } else if (actionSelected == "2") {
             let resMove = movePlayer(currentPlayer: currentPlayer, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstr: boardInstruction, H: H, W: W)
-            print("boardPos: ", resMove.2)
-            print("posPlayer: ", resMove.3)
             if !(resMove.4) {
                 let _ = actionPlayer(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W)
             } else {
@@ -71,8 +69,9 @@ class Action {
             tileSelected = Int(readLine()!)!-1
         }
         currentPlayer.cartes.append(resRandomTiles.1[tileSelected])
-        let i = resRandomTiles.1.index(of: resRandomTiles.1[tileSelected])
-        resRandomTiles.1.remove(at: i!)
+        //let i = resRandomTiles.1.index(of: resRandomTiles.1[tileSelected])
+        //resRandomTiles.1.remove(at: i!)
+        resRandomTiles.1.remove(at: tileSelected)
         resRandomTiles.0 = resRandomTiles.0 + resRandomTiles.1
         resRandomTiles.1 = []
         return (currentPlayer, resRandomTiles.0)
@@ -87,7 +86,6 @@ class Action {
         if (sizeList < nbVisibleTiles+1) {
             listUnveiledTiles = list
             list.removeAll()
-            //print("List of tiles: ", list)
             print("\nList of tiles unveiled: ", listUnveiledTiles)
             return (list, listUnveiledTiles)
         } else {
@@ -95,7 +93,6 @@ class Action {
                 listUnveiledTiles.append(list[0])
                 list.remove(at: 0)
             }
-            //print("List of tiles: ", list)
             print("\nList of tiles unveiled: ", listUnveiledTiles)
             return (list, listUnveiledTiles)
         }
@@ -103,9 +100,7 @@ class Action {
     
     func movePlayer(currentPlayer: Player, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], boardInstr: [String], H: Int, W: Int) -> (Player, [String], [String], [Int], Bool) {
         var valideAction: Bool
-        print(" -->> ")
         let posP = currentPlayer.position
-        print(posP)
         
         // calculate available positions
         let availablePos = calculateAvailablePos(currentPlayer: currentPlayer, boardInstr: boardInstr, H: H, W: W, action: "POS")
@@ -138,7 +133,6 @@ class Action {
         var valideAction: Bool
         print("Your set of tile: ", currentPlayer.cartes)
         print("You are on the case: ", currentPlayer.position)
-        print("board instr: --> ", boardInstruction)
         
         // ask which tile is wanted for this position
         if (currentPlayer.cartes.isEmpty) {
@@ -246,7 +240,6 @@ class Action {
                 }
             }
         }
-        print("laaa: ", availablePos)
         return availablePos
     }
     

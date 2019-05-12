@@ -36,14 +36,6 @@ class Board {
         puts("|")
     }
     
-    func linePlayer(n: Int) {
-        puts("|")
-        for _ in 1...n {
-            print("|              ", terminator: "");
-            puts("ok")
-        }
-    }
-    
     func displayNumCase(n: Int, displayCase: inout [String], tmp: inout Int) {
         for _ in 0...n-1 {
             displayCase[tmp] = String(tmp)
