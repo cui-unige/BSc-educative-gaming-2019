@@ -111,10 +111,10 @@ dist_lune = 1000
 conso_fusee = 50
 fuel = (dist_lune/conso_fusee)*2
 def check_fuel():
-    if (dist_lune/conso_fusee)*2 >= fuel:
+    if fuel > (dist_lune/conso_fusee)*2:
         return "fuel ok"
     else:
-        while cur_fuel != fuel:
+        while fuel < (dist_lune/conso_fusee)*2:
             fill()
         return "fuel ok"
         
