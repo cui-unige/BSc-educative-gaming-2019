@@ -38,7 +38,7 @@ func displayRules() {
 }
 
 
-func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Player, player4: Player, objective: [String], boardCase: [String], boardPos: [String], posPlayer: [Int], boardInstruction: [String], instrPlayer: [String], H: Int, W: Int, bd: inout Bool) {
+func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Player, player4: Player, objective: [String], boardCase: [String], boardPos: [String], posPlayer: [Int], boardInstruction: [String], instrPlayer: [String], boardLock: [String], H: Int, W: Int, bd: inout Bool) {
     let arrayAllPlayers = [player1, player2, player3, player4]
     var turnPlayer = Int.random(in: 0...numberPlayer-1)
     var tmpListTiles = objective
@@ -48,6 +48,7 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
     var tmpPosPlayer = posPlayer
     var tmpBoardInstruction = boardInstruction
     var tmpInstrPlayer = instrPlayer
+    var tmpBoardLock = boardLock
     // Stop the game
     var gameFinished = false
     var countTurn = 0
@@ -67,17 +68,12 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
             gameFinished = true
         } else {
             print("\nTURN OF PLAYER \(arrayAllPlayers[turnPlayer].id+1) : \(arrayAllPlayers[turnPlayer].nom)")
-            var res = Actions.actionPlayer(currentPlayer: arrayAllPlayers[turnPlayer], listTiles: &tmpListTiles, nbVisibleTiles: &visibleTiles, boardCase: &tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: &tmpBoardInstruction, instrPlayer: &tmpInstrPlayer, H: H, W: W)
-            /*
-            print("res player name:  --> ", res.0.nom)
-            print("res player deck:  --> ", res.0.cartes)
-            print("res stack tiles:  --> ", res.1)
-            print("res board num case:  --> ", res.2)
-            print("res board pos player:  --> ", res.3)
-            print("res array pos player:  --> ", res.4)
-            print("res board instruction: --> ", res.5)
-             */
-            Display.displayBoard(boardInit: &res.2, displayPos: &res.3, displayInstruction: &res.5, H: H, W: W, posPlayer: &res.4, instrPlayer: &res.6, bd: &bd)
+            let nbActionPerPlayer = 4
+            for numAct in 0...nbActionPerPlayer-1 {
+                print("ACTION NUMBER: \(numAct+1)")
+                var res = Actions.actionPlayer(currentPlayer: arrayAllPlayers[turnPlayer], listTiles: &tmpListTiles, nbVisibleTiles: &visibleTiles, boardCase: &tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: &tmpBoardInstruction, instrPlayer: &tmpInstrPlayer, boardLock: &tmpBoardLock, H: H, W: W)
+                let _ = Display.displayBoard(boardInit: &res.2, displayPos: &res.3, displayInstruction: &res.5, H: H, W: W, posPlayer: &res.4, instrPlayer: &res.6, displayLock: &res.7, bd: &bd)
+            }
         }
         turnPlayer = (turnPlayer + 1) % numberPlayer
     }
@@ -87,11 +83,12 @@ func main(nombreLine: Int, nombreCol: Int) {
     // Get informations of players - number - name
     var infoPlayers = welcome()
     
+    let center = (nombreLine*nombreCol)/2
     // Initialisation of players
-    let J1 = Player(id: 0, nom: infoPlayers.1[0], cartes: [], position: 5)
-    let J2 = Player(id: 1, nom: infoPlayers.1[1], cartes: [], position: 6)
-    let J3 = Player(id: 2, nom: infoPlayers.1[2], cartes: [], position: (nombreLine*nombreCol)/2)
-    let J4 = Player(id: 3, nom: infoPlayers.1[3], cartes: [], position: (nombreLine*nombreCol)/2)
+    let J1 = Player(id: 0, nom: infoPlayers.1[0], cartes: [], position: center)
+    let J2 = Player(id: 1, nom: infoPlayers.1[1], cartes: [], position: center)
+    let J3 = Player(id: 2, nom: infoPlayers.1[2], cartes: [], position: center)
+    let J4 = Player(id: 3, nom: infoPlayers.1[3], cartes: [], position: center)
     
     let tmpArrayPosPlayer = [J1.position, J2.position, J3.position, J4.position]
     var arrayPosPlayer: [Int] = []
@@ -109,24 +106,27 @@ func main(nombreLine: Int, nombreCol: Int) {
     var boardd = Array(repeating: "0", count: nombreLine*nombreCol)
     var boardP = Array(repeating: "", count: nombreLine*nombreCol)
     var boardI = Array(repeating: "", count: nombreLine*nombreCol)
-    let resDisplay = Display.displayBoard(boardInit: &boardd, displayPos: &boardP, displayInstruction: &boardI, H: nombreLine, W: nombreCol, posPlayer: &arrayPosPlayer, instrPlayer: &arrayInstructionPlayer, bd: &beginDispl)
+    boardI[center] = "∆ - ROCKET - ∆ "
+    var boardL = Array(repeating: "", count: nombreLine*nombreCol)
+    boardL[center] = "[LOCKED]    "
+    let resDisplay = Display.displayBoard(boardInit: &boardd, displayPos: &boardP, displayInstruction: &boardI, H: nombreLine, W: nombreCol, posPlayer: &arrayPosPlayer, instrPlayer: &arrayInstructionPlayer, displayLock: &boardL, bd: &beginDispl)
     
     // Initialise objective - set of tiles
     var listTiles: [String] = []
     var listObjectives: [[String]] = []
-    let objective0: [String] = ["obj0 - t1","obj0 - t2","obj0 - t3","obj0 - t4","obj0 - t5"]
-    let objective1: [String] = ["obj1 - t1","obj1 - t2","obj1 - t3","obj1 - t4","obj1 - t5"]
-    let objective2: [String] = ["obj2 - t1","obj2 - t2","obj2 - t3","obj2 - t4","obj2 - t5"]
-    let objective3: [String] = ["obj3 - t1","obj3 - t2","obj3 - t3","obj3 - t4","obj3 - t5"]
-    let objective4: [String] = ["obj4 - t1","obj4 - t2","obj4 - t3","obj4 - t4","obj4 - t5"]
-    let objective5: [String] = ["obj5 - t1","obj5 - t2","obj5 - t3","obj5 - t4","obj5 - t5"]
+    let objective_countdown: [String] = ["BEGIN", "while", "n", "! = 0", "show(n)", "n--", "END"]
+    let objective_ckeckTeam: [String] = ["BEGIN", "for", "i in list", "n++", "if", "n", "== len(list)", "END"]
+    let objective_checkFuel: [String] = ["BEGIN", "if", "(d_lune/c_fus)*2", ">= fuel", "check()", "else", "while", "cur_fuel", "!= fuel", "fill", "END"]
+    let objective_autoPilot: [String] = ["BEGIN", "if", "cur_dist", "<= (1/3)*d_lune", "s = take_off", "else if", "cur_dist", "> (2/3)*d_lune", "s = landing", "else", "s = fly", "END"]
+    let objective_checkTask: [String] = ["BEGIN", "for", "i in list", "if", "check(i)", "== true", "continue", "else", "check(i) == true", "END"]
+    let objective_checkEngine: [String] = ["BEGIN", "if", "temp", "> right_temp", "check()", "else", "while", "temp", "!= right_temp", "warm()", "check()", "END"]
     
-    listObjectives.append(objective0)
-    listObjectives.append(objective1)
-    listObjectives.append(objective2)
-    listObjectives.append(objective3)
-    listObjectives.append(objective4)
-    listObjectives.append(objective5)
+    listObjectives.append(objective_countdown)
+    listObjectives.append(objective_ckeckTeam)
+    listObjectives.append(objective_checkFuel)
+    listObjectives.append(objective_autoPilot)
+    listObjectives.append(objective_checkTask)
+    listObjectives.append(objective_checkEngine)
     
     // Select random objectives depends of the number of players
     for _ in 0...infoPlayers.0-1 {
@@ -136,14 +136,14 @@ func main(nombreLine: Int, nombreCol: Int) {
     }
     
     // All tiles available for the game (concatenation of objectives)
-    print("listTiles: --> ", listTiles)
+    print("\nlist of Tiles for this game: --> ", listTiles)
     
     // Duplication of the tiles implies don't need the whole tiles to win the game
     listTiles += listTiles
 
     // Start the game
-    beginGame(numberPlayer: infoPlayers.0, player1: J1, player2: J2, player3: J3, player4: J4, objective: listTiles, boardCase: resDisplay.0, boardPos: resDisplay.1, posPlayer: resDisplay.2, boardInstruction: resDisplay.5, instrPlayer: resDisplay.6, H: resDisplay.3, W: resDisplay.4, bd: &beginDispl)
+    beginGame(numberPlayer: infoPlayers.0, player1: J1, player2: J2, player3: J3, player4: J4, objective: listTiles, boardCase: resDisplay.0, boardPos: resDisplay.1, posPlayer: resDisplay.2, boardInstruction: resDisplay.5, instrPlayer: resDisplay.6, boardLock: resDisplay.7, H: resDisplay.3, W: resDisplay.4, bd: &beginDispl)
 }
 
 // Start program
-main(nombreLine: 7, nombreCol: 12)
+main(nombreLine: 7, nombreCol: 9)
