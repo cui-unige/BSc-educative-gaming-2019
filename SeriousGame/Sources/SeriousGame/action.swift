@@ -13,15 +13,19 @@ class Action {
     let Interp = Interpretor()
     
     // return (Player info), (list of tiles in stack not selected), (board num of case), (board position of player) , (array of pos player (for display)), ...
-    func actionPlayer(currentPlayer: Player, listTiles: inout [String], nbVisibleTiles: inout Int, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], boardInstruction: inout [String], instrPlayer: inout [String], boardLock: inout [String], H: Int, W: Int) -> (Player, [String], [String], [String], [Int], [String], [String], [String]) {
+    func actionPlayer(currentPlayer: Player, listTiles: inout [String], nbVisibleTiles: inout Int, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], boardInstruction: inout [String], instrPlayer: inout [String], boardLock: inout [String], H: Int, W: Int, skipTurn: inout Bool) -> (Player, [String], [String], [String], [Int], [String], [String], [String]) {
         print("Your set of tiles: ", currentPlayer.cartes)
         print("\nSELECT YOUR ACTION:")
-        print("1 - Draw a card\n2 - Move on the map\n3 - Explore the map\n4 - Lock a tile")
+        // ADD ACTION : 6- UNLOCK A TILE -4 DEFOSSE A CARD
+        print("1 - Draw a card          2 - Move on the map\n3 - Explore the map      4 x Discard a card\n5 - Lock a tile          6 x Unlock a tile\n7 - Skip turn")
         let actionSelected = readLine()
         if (actionSelected == "1") {
             if (listTiles == []) {
                 print("No more tiles in the set !")
-                let _ = actionPlayer(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W)
+                let _ = actionPlayer(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W, skipTurn: &skipTurn)
+            } else if (currentPlayer.cartes.count > 2) {
+                print("You already have 3 tiles in your hand !")
+                let _ = actionPlayer(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W, skipTurn: &skipTurn)
             } else {
                 let resDraw = drawACard(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles)
                 listTiles = resDraw.1
@@ -30,14 +34,14 @@ class Action {
         } else if (actionSelected == "2") {
             let resMove = movePlayer(currentPlayer: currentPlayer, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstr: boardInstruction, H: H, W: W)
             if !(resMove.4) {
-                let _ = actionPlayer(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W)
+                let _ = actionPlayer(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W, skipTurn: &skipTurn)
             } else {
                 return (resMove.0, listTiles, resMove.1, resMove.2, resMove.3, boardInstruction, instrPlayer, boardLock)
             }
         } else if (actionSelected == "3") {
             let resExplore = exploreMap(currentPlayer: currentPlayer, boardCase: &boardCase, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, H: H, W: W)
             if !(resExplore.4) {
-                let _ = actionPlayer(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W)
+                let _ = actionPlayer(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W, skipTurn: &skipTurn)
             } else {
                 return (resExplore.0, listTiles, resExplore.1, boardPos, posPlayer, resExplore.2, resExplore.3, boardLock)
             }
@@ -45,13 +49,15 @@ class Action {
             let resLock = lockTile(currentPlayer: currentPlayer, boardLock: &boardLock, boardInstruction: boardInstruction, H: H, W: W)
             // a wrong selection allows player to select another action
             if !(resLock.2) {
-                let _ = actionPlayer(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W)
+                let _ = actionPlayer(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W, skipTurn: &skipTurn)
             } else {
                 return (resLock.0, listTiles, boardCase, boardPos, posPlayer, boardInstruction, instrPlayer, resLock.1)
             }
+        } else if (actionSelected == "7") {
+            skipTurn = true
+            return (currentPlayer, listTiles, boardCase, boardPos, posPlayer, boardInstruction, instrPlayer, boardLock)
         }
         
-        // case player skip action selected (miss click, etc ...)
         return (currentPlayer, listTiles, boardCase, boardPos, posPlayer, boardInstruction, instrPlayer, boardLock)
     }
     

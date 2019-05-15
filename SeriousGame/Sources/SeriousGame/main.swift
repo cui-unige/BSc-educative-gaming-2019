@@ -10,7 +10,38 @@ import Foundation
 
 let Display = Board()
 let Actions = Action()
+
+// max player for a game -> add min to 2
 let maxPlayer = 4
+
+// definition of storm cards
+let eclair = "Eclair"
+let bourasque = "Bourasque"
+let ventTourne = "Vent Tourne"
+let dechainement = "Orage se dechaine"
+let dechainement2 = "Orage se dechaine + Melange pile"
+
+// definition of equip cards
+let threeAction = "+3 action"
+let swapTile = "Echanger une tuiles"
+let shieldBourasque = "Protege de la bourasque"
+let removeInt = "Remove(Int)"
+let pop = "Pop()"
+let replace = "Replace()"
+let addPV = "+1 PV"
+let shieldStorm = "Protege de l'eclair"
+let reverseStack = "Reverse()"
+let shuffleStack = "Shuffle()"
+
+// definition of objectives
+let objective_countdown: [String] = ["BEGIN", "while", "n", "! = 0", "show(n)", "n--", "END"]
+let objective_ckeckTeam: [String] = ["BEGIN", "for", "i in list", "n++", "if", "n", "== len(list)", "END"]
+let objective_checkFuel: [String] = ["BEGIN", "if", "fuel", ">= (d_l/c_f)*2", "check()", "else", "while", "cur_fuel", "!= fuel", "fill", "END"]
+let objective_autoPilot: [String] = ["BEGIN", "if", "cur_dist", "<= (1/3)*d_lune", "s = take_off", "else if", "cur_dist", "> (2/3)*d_lune", "s = landing", "else", "s = fly", "END"]
+let objective_checkTask: [String] = ["BEGIN", "for", "i in list", "if", "check(i)", "== true", "continue", "else", "check(i) == true", "END"]
+let objective_checkEngine: [String] = ["BEGIN", "if", "temp", "> right_temp", "check()", "else", "while", "temp", "!= right_temp", "warm()", "check()", "END"]
+
+
 
 func askNamePlayer(numPlayers: Int) -> [String] {
     var arrayPlayer = Array(repeating: "", count: maxPlayer)
@@ -56,6 +87,12 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
     //var healthPlayer = Array(repeating: hpMax, count: numberPlayer) ?
     //var onePlayerDead = false
     
+    // storm stack : cards depends of number of player ??
+    let stormStack = Card(stormStack: [], equipStack: [])
+    stormStack.stormStack.append(contentsOf: [eclair, eclair, eclair, bourasque, bourasque, bourasque, bourasque, ventTourne, ventTourne, dechainement, dechainement, dechainement2])
+    print(stormStack.stormStack)
+    
+    var skipTurn = false
     bd = false
     while gameFinished != true {
         countTurn += 1
@@ -66,15 +103,22 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
         }
         if (deadline == 0) {
             gameFinished = true
+            print("The deadline is over !\nGAME OVER")
         } else {
             print("\nTURN OF PLAYER \(arrayAllPlayers[turnPlayer].id+1) : \(arrayAllPlayers[turnPlayer].nom)")
             let nbActionPerPlayer = 4
             for numAct in 0...nbActionPerPlayer-1 {
                 print("ACTION NUMBER: \(numAct+1)")
-                var res = Actions.actionPlayer(currentPlayer: arrayAllPlayers[turnPlayer], listTiles: &tmpListTiles, nbVisibleTiles: &visibleTiles, boardCase: &tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: &tmpBoardInstruction, instrPlayer: &tmpInstrPlayer, boardLock: &tmpBoardLock, H: H, W: W)
+                var res = Actions.actionPlayer(currentPlayer: arrayAllPlayers[turnPlayer], listTiles: &tmpListTiles, nbVisibleTiles: &visibleTiles, boardCase: &tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: &tmpBoardInstruction, instrPlayer: &tmpInstrPlayer, boardLock: &tmpBoardLock, H: H, W: W, skipTurn: &skipTurn)
+                if (skipTurn == true) {
+                    skipTurn = false
+                    break
+                }
                 let _ = Display.displayBoard(boardInit: &res.2, displayPos: &res.3, displayInstruction: &res.5, H: H, W: W, posPlayer: &res.4, instrPlayer: &res.6, displayLock: &res.7, bd: &bd)
             }
+            
         }
+        // action storm stack
         turnPlayer = (turnPlayer + 1) % numberPlayer
     }
 }
@@ -85,10 +129,10 @@ func main(nombreLine: Int, nombreCol: Int) {
     
     let center = (nombreLine*nombreCol)/2
     // Initialisation of players
-    let J1 = Player(id: 0, nom: infoPlayers.1[0], cartes: [], position: center)
-    let J2 = Player(id: 1, nom: infoPlayers.1[1], cartes: [], position: center)
-    let J3 = Player(id: 2, nom: infoPlayers.1[2], cartes: [], position: center)
-    let J4 = Player(id: 3, nom: infoPlayers.1[3], cartes: [], position: center)
+    let J1 = Player(id: 0, nom: infoPlayers.1[0], cartes: [], position: center, equip: [])
+    let J2 = Player(id: 1, nom: infoPlayers.1[1], cartes: [], position: center, equip: [])
+    let J3 = Player(id: 2, nom: infoPlayers.1[2], cartes: [], position: center, equip: [])
+    let J4 = Player(id: 3, nom: infoPlayers.1[3], cartes: [], position: center, equip: [])
     
     let tmpArrayPosPlayer = [J1.position, J2.position, J3.position, J4.position]
     var arrayPosPlayer: [Int] = []
@@ -114,12 +158,12 @@ func main(nombreLine: Int, nombreCol: Int) {
     // Initialise objective - set of tiles
     var listTiles: [String] = []
     var listObjectives: [[String]] = []
-    let objective_countdown: [String] = ["BEGIN", "while", "n", "! = 0", "show(n)", "n--", "END"]
-    let objective_ckeckTeam: [String] = ["BEGIN", "for", "i in list", "n++", "if", "n", "== len(list)", "END"]
-    let objective_checkFuel: [String] = ["BEGIN", "if", "(d_lune/c_fus)*2", ">= fuel", "check()", "else", "while", "cur_fuel", "!= fuel", "fill", "END"]
-    let objective_autoPilot: [String] = ["BEGIN", "if", "cur_dist", "<= (1/3)*d_lune", "s = take_off", "else if", "cur_dist", "> (2/3)*d_lune", "s = landing", "else", "s = fly", "END"]
-    let objective_checkTask: [String] = ["BEGIN", "for", "i in list", "if", "check(i)", "== true", "continue", "else", "check(i) == true", "END"]
-    let objective_checkEngine: [String] = ["BEGIN", "if", "temp", "> right_temp", "check()", "else", "while", "temp", "!= right_temp", "warm()", "check()", "END"]
+    
+    // add empty tiles
+    var emptyTiles: [String] = []
+    for _ in 0...(infoPlayers.0)*3 {
+        emptyTiles.append("_")
+    }
     
     listObjectives.append(objective_countdown)
     listObjectives.append(objective_ckeckTeam)
@@ -138,8 +182,11 @@ func main(nombreLine: Int, nombreCol: Int) {
     // All tiles available for the game (concatenation of objectives)
     print("\nlist of Tiles for this game: --> ", listTiles)
     
-    // Duplication of the tiles implies don't need the whole tiles to win the game
-    listTiles += listTiles
+    // Duplication of the tiles implies don't need the whole tiles to win the game ??
+    //listTiles += listTiles
+    
+    // insert empty tiles
+    listTiles += emptyTiles
 
     // Start the game
     beginGame(numberPlayer: infoPlayers.0, player1: J1, player2: J2, player3: J3, player4: J4, objective: listTiles, boardCase: resDisplay.0, boardPos: resDisplay.1, posPlayer: resDisplay.2, boardInstruction: resDisplay.5, instrPlayer: resDisplay.6, boardLock: resDisplay.7, H: resDisplay.3, W: resDisplay.4, bd: &beginDispl)
