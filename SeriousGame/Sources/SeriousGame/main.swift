@@ -17,11 +17,12 @@ let maxPlayer = 4
 // definition of storm cards
 let eclair = "Eclair"
 let bourasque = "Bourasque"
-let ventTourne = "Vent Tourne"
+let ventTourneHoraire = "Vent Tourne Horaire"
+let ventTourneAntiHoraire = "Vent Tourne Anti-Horaire"
 let dechainement = "Orage se dechaine"
 let dechainement2 = "Orage se dechaine + Melange pile"
 
-// definition of equip cards
+// definition of equip cards  --> REMOVE
 let threeAction = "+3 action"
 let swapTile = "Echanger une tuiles"
 let shieldBourasque = "Protege de la bourasque"
@@ -84,16 +85,24 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
     var gameFinished = false
     var countTurn = 0
     var deadline = 10
-    //var healthPlayer = Array(repeating: hpMax, count: numberPlayer) ?
-    //var onePlayerDead = false
     
-    // storm stack : cards depends of number of player ??
-    let stormStack = Card(stormStack: [], equipStack: [])
-    stormStack.stormStack.append(contentsOf: [eclair, eclair, eclair, bourasque, bourasque, bourasque, bourasque, ventTourne, ventTourne, dechainement, dechainement, dechainement2])
-    print(stormStack.stormStack)
+    // storm stack : cards depends of number of player ?? -- REMOVE EQUIP
+    // initialisation of the stack
+    let gameStack = Card(stormStack: [], equipStack: [], jaugeStorm: Double(5-numberPlayer))
+    gameStack.stormStack.append(contentsOf: [eclair, eclair, eclair, bourasque, bourasque, bourasque, bourasque, ventTourneHoraire, ventTourneAntiHoraire, dechainement, dechainement, dechainement2])
+    gameStack.stormStack.shuffle()
     
+    // for testing
+    //gameStack.stormStack[0] = "Vent Tourne Anti-Horaire"
+    
+    // definition of the needle
+    var needle = "→"
+    
+    // define if press action "Skip turn"
     var skipTurn = false
+    // for the display of the beginning of the game
     bd = false
+    
     while gameFinished != true {
         countTurn += 1
         // One entire turn decrease deadline which is global for all players
@@ -108,7 +117,16 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
             print("\nTURN OF PLAYER \(arrayAllPlayers[turnPlayer].id+1) : \(arrayAllPlayers[turnPlayer].nom)")
             let nbActionPerPlayer = 4
             for numAct in 0...nbActionPerPlayer-1 {
-                print("ACTION NUMBER: \(numAct+1)")
+                // display storm cards incoming
+                print("The next storm cards are :", terminator: "")
+                for card in 0...4 {
+                 print(" -> [\(gameStack.stormStack[card])]", terminator: "")
+                }
+                print(" -> ...")
+                
+                // display wind direction
+                print("The wind direction is: ", needle)
+                print("\nACTION NUMBER: \(numAct+1)")
                 var res = Actions.actionPlayer(currentPlayer: arrayAllPlayers[turnPlayer], listTiles: &tmpListTiles, nbVisibleTiles: &visibleTiles, boardCase: &tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: &tmpBoardInstruction, instrPlayer: &tmpInstrPlayer, boardLock: &tmpBoardLock, H: H, W: W, skipTurn: &skipTurn)
                 if (skipTurn == true) {
                     skipTurn = false
@@ -118,7 +136,43 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
             }
             
         }
+        
         // action storm stack
+        let nbCardPerJauge = Int(ceil(gameStack.jaugeStorm/5))
+        let changeCardsStorm = gameStack.stormStack.prefix(nbCardPerJauge)
+        gameStack.stormStack.removeFirst(nbCardPerJauge)
+        gameStack.stormStack += changeCardsStorm
+        
+        print("changeCardsStorm: ", changeCardsStorm)
+        
+        for changeCards in 0...changeCardsStorm.count-1 {
+            // case of "Orage se dechaine"
+            if (changeCardsStorm[changeCards] == dechainement) {
+                gameStack.actionDechaine(objStack: gameStack)
+            }
+            // case of "Orage se dechaine + Melange"
+            if (changeCardsStorm[changeCards] == dechainement2) {
+                gameStack.actionDechaineMel(objStack: gameStack)
+            }
+            // case of "Eclair"
+            if (changeCardsStorm[changeCards] == eclair) {
+                gameStack.actionEclair(currentDeadLine: &deadline)
+            }
+            // case of "Vent Tourne Horaire"
+            if (changeCardsStorm[changeCards] == ventTourneHoraire) {
+                gameStack.actionVentTourneHoraire(needle: &needle)
+            }
+            // case of "Vent Tourne Anti-Horaire"
+            if (changeCardsStorm[changeCards] == ventTourneAntiHoraire) {
+                gameStack.actionVentTourneAntiHoraire(needle: &needle)
+            }
+            // case of "Bourasque"
+            if (changeCardsStorm[changeCards] == bourasque) {
+                gameStack.actionBourasque(nbPlayer: numberPlayer, arrayPlayer: arrayAllPlayers, boardCase: boardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: boardInstruction, W: W, needle: needle)
+            }
+            print("newPosPlayer: ", tmpPosPlayer)
+        }
+        //let _ = Display.displayBoard(boardInit: boardCase, displayPos: boardPos, displayInstruction: boardInstruction, H: H, W: W, posPlayer: posPlayer, instrPlayer: instrPlayer, displayLock: boardLock, bd: bd)
         turnPlayer = (turnPlayer + 1) % numberPlayer
     }
 }
@@ -153,7 +207,7 @@ func main(nombreLine: Int, nombreCol: Int) {
     boardI[center] = "∆ - ROCKET - ∆ "
     var boardL = Array(repeating: "", count: nombreLine*nombreCol)
     boardL[center] = "[LOCKED]    "
-    let resDisplay = Display.displayBoard(boardInit: &boardd, displayPos: &boardP, displayInstruction: &boardI, H: nombreLine, W: nombreCol, posPlayer: &arrayPosPlayer, instrPlayer: &arrayInstructionPlayer, displayLock: &boardL, bd: &beginDispl)
+    var resDisplay = Display.displayBoard(boardInit: &boardd, displayPos: &boardP, displayInstruction: &boardI, H: nombreLine, W: nombreCol, posPlayer: &arrayPosPlayer, instrPlayer: &arrayInstructionPlayer, displayLock: &boardL, bd: &beginDispl)
     
     // Initialise objective - set of tiles
     var listTiles: [String] = []
