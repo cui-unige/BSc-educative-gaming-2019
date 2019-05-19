@@ -67,6 +67,8 @@ func displayRules() {
     print("\nGOALS & RULES:\n")
     print("The goal of this game is to create a path with way cards (\(nbCardsWay)) in order to get the rocket off the ground when everything is well connected in the right order ! There are several unforeseen during the game.\nEach turn, each player draws a card. He can do four actions per turn between - draw a way card - explore -  ....\nAfter having do a correct program, the game is win and every player have won ! But if one of all players lose his whole life, every player of the game lost the game ! You have to do some tasks to allow the take off of the rocket !")
     print("\n\n")
+    print("Press [ENTER] to begin the game !")
+    let _ = readLine()
 }
 
 
@@ -84,7 +86,7 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
     // Stop the game
     var gameFinished = false
     var countTurn = 0
-    var deadline = 10
+    var deadline = 25
     
     // storm stack : cards depends of number of player ?? -- REMOVE EQUIP
     // initialisation of the stack
@@ -93,7 +95,8 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
     gameStack.stormStack.shuffle()
     
     // for testing
-    //gameStack.stormStack[0] = "Vent Tourne Anti-Horaire"
+    //gameStack.stormStack[2] = "Bourasque"
+    //gameStack.stormStack[3] = "Bourasque"
     
     // definition of the needle
     var needle = "→"
@@ -127,7 +130,7 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
                 // display wind direction
                 print("The wind direction is: ", needle)
                 print("\nACTION NUMBER: \(numAct+1)")
-                var res = Actions.actionPlayer(currentPlayer: arrayAllPlayers[turnPlayer], listTiles: &tmpListTiles, nbVisibleTiles: &visibleTiles, boardCase: &tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: &tmpBoardInstruction, instrPlayer: &tmpInstrPlayer, boardLock: &tmpBoardLock, H: H, W: W, skipTurn: &skipTurn)
+                var res = Actions.actionPlayer(currentPlayer: arrayAllPlayers[turnPlayer], arrayP: arrayAllPlayers, nbP: numberPlayer, listTiles: &tmpListTiles, nbVisibleTiles: &visibleTiles, boardCase: &tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: &tmpBoardInstruction, instrPlayer: &tmpInstrPlayer, boardLock: &tmpBoardLock, H: H, W: W, skipTurn: &skipTurn)
                 if (skipTurn == true) {
                     skipTurn = false
                     break
@@ -168,9 +171,9 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
             }
             // case of "Bourasque"
             if (changeCardsStorm[changeCards] == bourasque) {
-                gameStack.actionBourasque(nbPlayer: numberPlayer, arrayPlayer: arrayAllPlayers, boardCase: boardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: boardInstruction, W: W, needle: needle)
+                gameStack.actionBourasque(nbPlayer: numberPlayer, arrayPlayer: arrayAllPlayers, boardCase: tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: tmpBoardInstruction, W: W, H: H, needle: needle, deadline: &deadline)
             }
-            print("newPosPlayer: ", tmpPosPlayer)
+            print("deadline: ", deadline)
         }
         //let _ = Display.displayBoard(boardInit: boardCase, displayPos: boardPos, displayInstruction: boardInstruction, H: H, W: W, posPlayer: posPlayer, instrPlayer: instrPlayer, displayLock: boardLock, bd: bd)
         turnPlayer = (turnPlayer + 1) % numberPlayer
@@ -206,8 +209,7 @@ func main(nombreLine: Int, nombreCol: Int) {
     var boardI = Array(repeating: "", count: nombreLine*nombreCol)
     boardI[center] = "∆ - ROCKET - ∆ "
     var boardL = Array(repeating: "", count: nombreLine*nombreCol)
-    boardL[center] = "[LOCKED]    "
-    var resDisplay = Display.displayBoard(boardInit: &boardd, displayPos: &boardP, displayInstruction: &boardI, H: nombreLine, W: nombreCol, posPlayer: &arrayPosPlayer, instrPlayer: &arrayInstructionPlayer, displayLock: &boardL, bd: &beginDispl)
+    let resDisplay = Display.displayBoard(boardInit: &boardd, displayPos: &boardP, displayInstruction: &boardI, H: nombreLine, W: nombreCol, posPlayer: &arrayPosPlayer, instrPlayer: &arrayInstructionPlayer, displayLock: &boardL, bd: &beginDispl)
     
     // Initialise objective - set of tiles
     var listTiles: [String] = []
