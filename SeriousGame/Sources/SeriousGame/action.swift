@@ -309,7 +309,14 @@ class Action {
     
     func removeTile(currentPlayer: Player, boardInstruction: inout [String], listTiles: inout [String], H: Int, W: Int) -> (Player, [String], [String], Bool) {
         var valideAction: Bool
-        let availablePosRemove = calculateAvailablePos(currentPlayer: currentPlayer, boardInstr: boardInstruction, H: H, W: W, action: "POS")
+        let availablePosRemoveRes = calculateAvailablePos(currentPlayer: currentPlayer, boardInstr: boardInstruction, H: H, W: W, action: "POS")
+        var availablePosRemove: [Int] = []
+        let center = (H*W)/2
+        for i in availablePosRemoveRes {
+            if !(i == center) {
+                availablePosRemove.append(i)
+            }
+        }
         
         if (availablePosRemove.isEmpty) {
             valideAction = false

@@ -180,9 +180,9 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
             if (changeCardsStorm[changeCards] == bourasque) {
                 gameStack.actionBourasque(nbPlayer: numberPlayer, arrayPlayer: arrayAllPlayers, boardCase: tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: tmpBoardInstruction, W: W, H: H, needle: needle, deadline: &deadline)
             }
-            print("The deadline: ", deadline)
         }
-        //let _ = Display.displayBoard(boardInit: boardCase, displayPos: boardPos, displayInstruction: boardInstruction, H: H, W: W, posPlayer: posPlayer, instrPlayer: instrPlayer, displayLock: boardLock, bd: bd)
+        let _ = Display.displayBoard(boardInit: &tmpBoardCase, displayPos: &tmpBoardPos, displayInstruction: &tmpBoardInstruction, H: H, W: W, posPlayer: &tmpPosPlayer, instrPlayer: &tmpInstrPlayer, displayLock: &tmpBoardLock, bd: &bd)
+        
         turnPlayer = (turnPlayer + 1) % numberPlayer
     }
 }
