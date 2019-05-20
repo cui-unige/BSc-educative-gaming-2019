@@ -47,7 +47,7 @@ let objective_checkEngine: [String] = ["BEGIN", "if", "temp", "> right_temp", "c
 func askNamePlayer(numPlayers: Int) -> [String] {
     var arrayPlayer = Array(repeating: "", count: maxPlayer)
     for players in 0...numPlayers-1 {
-        print("NAME OF PLAYER \(players+1): ", terminator: "")
+        print("Name of player \(players+1): ", terminator: "")
         let namePlayer = readLine()
         arrayPlayer[players] = namePlayer!
     }
@@ -56,19 +56,27 @@ func askNamePlayer(numPlayers: Int) -> [String] {
 
 func welcome() -> (nbP: Int, [String]) { // (nbPlayer: Int, namePlayer: [String])
     print("WELCOME TO SPACE ENCORDERS\n")
-    print("ENTER THE NUMBER OF PLAYER: ", terminator: "")
+    print("ENTER THE NUMBER OF PLAYER (2-4): ", terminator: "")
     let nbPlayer = readLine()!
     let enumPlayer = askNamePlayer(numPlayers: Int(nbPlayer)!)
     return (Int(nbPlayer)!, enumPlayer)
 }
 
 func displayRules() {
-    let nbCardsWay = 36
-    print("\nGOALS & RULES:\n")
-    print("The goal of this game is to create a path with way cards (\(nbCardsWay)) in order to get the rocket off the ground when everything is well connected in the right order ! There are several unforeseen during the game.\nEach turn, each player draws a card. He can do four actions per turn between - draw a way card - explore -  ....\nAfter having do a correct program, the game is win and every player have won ! But if one of all players lose his whole life, every player of the game lost the game ! You have to do some tasks to allow the take off of the rocket !")
-    print("\n\n")
-    print("Press [ENTER] to begin the game !")
+    print("\nGOALS:")
+    print("The goal of this game is to create several algorithms with tiles in order to allow the rocket to take off. The tiles must be well connected ! this game is based on cooperation so you are advised to play with your allies ! But be careful, you have to be fast enough to build everything before the end of time !")
+    
+    print("\nRULES:")
+    print("Firsty every player begin in the center of the map (in the same case of the Rocket). The algorithms to build are selected randomly (number of player = number of algorithms to build) ! Each turn, each player can do 4 actions or less. He has the choice between : (1) Draw a card, (2) Move on the map, (3) Explore the map, (4) Remove a tile, (5) Swap a tile, (6) Skip turn. Moreover there are several unforeseen during the game : The storm cards. It happend every end of turn of a player ! The more the gauge is high, the more storm cards are applied ! When every algorithms are well constructed before the end of the deadline and if every player are in the center, the game is win !")
+    
+    print("\nThe effect of action are the followings:\n[Draw a tile] : choose a tile from the draw stack\n[Move on the map] : move on tiles\n[Explore the map] : place a tile on a case adjacent to its position\n[Remove a tile] : remove a tile on a case adjacent to its position\n[Swap a tile] : swap a tile between 2 players\n[Skip turn] : simply skip your turn")
+    
+    print("\nThe effect of storm cards are the followings:\n[Vent Tourne Horaire] : change the wind direction clockwise\n[Vent Tourne Anti-Horaire] : change the wind direction counter clockwise\n[Eclair] : remove 1 HP of deadline\n[Bourasque] : push all player (1 case) in the wind direction\n[Orage se dechaine] : increase by 1 the storm gauge\n[Orage se dechaine + Melange pile]: same + remix all storm cards")
+    
+    print("\n\nPress [ENTER] to begin the game !")
     let _ = readLine()
+    
+    print("\nThe initial board :")
 }
 
 
@@ -117,11 +125,12 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
             gameFinished = true
             print("The deadline is over !\nGAME OVER")
         } else {
+            print("The deadline: ", deadline)
             print("\nTURN OF PLAYER \(arrayAllPlayers[turnPlayer].id+1) : \(arrayAllPlayers[turnPlayer].nom)")
             let nbActionPerPlayer = 4
             for numAct in 0...nbActionPerPlayer-1 {
                 // display storm cards incoming
-                print("The next storm cards are :", terminator: "")
+                print("\nThe next storm cards are :", terminator: "")
                 for card in 0...4 {
                  print(" -> [\(gameStack.stormStack[card])]", terminator: "")
                 }
@@ -145,8 +154,6 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
         let changeCardsStorm = gameStack.stormStack.prefix(nbCardPerJauge)
         gameStack.stormStack.removeFirst(nbCardPerJauge)
         gameStack.stormStack += changeCardsStorm
-        
-        print("changeCardsStorm: ", changeCardsStorm)
         
         for changeCards in 0...changeCardsStorm.count-1 {
             // case of "Orage se dechaine"
@@ -173,7 +180,7 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
             if (changeCardsStorm[changeCards] == bourasque) {
                 gameStack.actionBourasque(nbPlayer: numberPlayer, arrayPlayer: arrayAllPlayers, boardCase: tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: tmpBoardInstruction, W: W, H: H, needle: needle, deadline: &deadline)
             }
-            print("deadline: ", deadline)
+            print("The deadline: ", deadline)
         }
         //let _ = Display.displayBoard(boardInit: boardCase, displayPos: boardPos, displayInstruction: boardInstruction, H: H, W: W, posPlayer: posPlayer, instrPlayer: instrPlayer, displayLock: boardLock, bd: bd)
         turnPlayer = (turnPlayer + 1) % numberPlayer
@@ -236,7 +243,7 @@ func main(nombreLine: Int, nombreCol: Int) {
     }
     
     // All tiles available for the game (concatenation of objectives)
-    print("\nlist of Tiles for this game: --> ", listTiles)
+    print("\nlist of Tiles for this game: --> \(listTiles)\n")
     
     // Duplication of the tiles implies don't need the whole tiles to win the game ??
     //listTiles += listTiles

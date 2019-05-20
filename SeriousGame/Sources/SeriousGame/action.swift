@@ -15,11 +15,15 @@ class Action {
     // return (Player info), (list of tiles in stack not selected), (board num of case), (board position of player) , (array of pos player (for display)), ...
     func actionPlayer(currentPlayer: Player, arrayP: [Player], nbP: Int, listTiles: inout [String], nbVisibleTiles: inout Int, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], boardInstruction: inout [String], instrPlayer: inout [String], boardLock: inout [String], H: Int, W: Int, skipTurn: inout Bool) -> (Player,  [String], [String], [String], [Int], [String], [String], [String], [Player]) {
         print("Your set of tiles: ", currentPlayer.cartes)
-        
+        for player in arrayP {
+            if (player.id != currentPlayer.id && player.nom != "") {
+                print("\(player.nom)'s set of tile: ", player.cartes)
+            }
+        }
         print("\nSELECT YOUR ACTION:")
-        // ADD ACTION : 6- UNLOCK A TILE -4 DEFOSSE A CARD
-        print("1 - Draw a card          2 - Move on the map\n3 - Explore the map      4 - Remove a tile\n5 - Swap a tile          6 - Skip turn\n")
+        print("1 - Draw a tile          2 - Move on the map\n3 - Explore the map      4 - Remove a tile\n5 - Swap a tile          6 - Skip turn\n")
         let actionSelected = readLine()
+        print("")
         if (actionSelected == "1") {
             if (listTiles == []) {
                 print("No more tiles in the set !")
@@ -211,7 +215,6 @@ class Action {
             let tileSelected = Int(readLine()!)!-1
             
             let availablePosInstr = calculateAvailablePos(currentPlayer: currentPlayer, boardInstr: boardInstruction, H: H, W: W, action: "INSTR")
-            print("-->", availablePosInstr)
             // insert the tile in the instr's board
             // a tile can be posed only if no tile is already posed
             // it can be posed only with contact
@@ -227,7 +230,6 @@ class Action {
                 }
                 let posSelected = Int(readLine()!)!-1
                 valideAction = true
-                print("ici: ",posSelected)
                 
                 // DO THIS IN LOCK ACT
                 // test if pass the interpretor
@@ -333,7 +335,6 @@ class Action {
         var valideAction: Bool = true
         var tmpArrayPlayer = arrayPlayer.prefix(nbP)
         tmpArrayPlayer.remove(at: currentPlayer.id)
-        print("laaa: ", tmpArrayPlayer)
         
         var allPlayerCards: [String] = []
         for cardsPlayer in tmpArrayPlayer {

@@ -66,19 +66,20 @@ class Card {
     }
     
     func actionBourasque(nbPlayer: Int, arrayPlayer: [Player], boardCase: [String], boardPos: inout [String], posPlayer: inout [Int], boardInstruction: [String], W: Int, H: Int, needle: String, deadline: inout Int) {
+        /*
         print("boardCase: ", boardCase)
         print("boardPos: ", boardPos)
         print("posPlayer: ", posPlayer)
         print("boardInstruction: ", boardInstruction)
+         */
         let tmpArrayPlayer = arrayPlayer.prefix(nbPlayer)
-        print("tmpArrayPlayer:", tmpArrayPlayer)
+        //print("tmpArrayPlayer:", tmpArrayPlayer)
         
         switch needle {
         case "→":
             // move every player if conditions are checked
             for currentPlayer in tmpArrayPlayer {
                 let res = calculateAvailablePosBourasque(currentPlayer: currentPlayer, boardInstr: boardInstruction, H: H, W: W, needle: needle, deadline: &deadline)
-                print("res.0: ", res.0)
                 if (res.0) {
                     boardPos[currentPlayer.position] = boardPos[currentPlayer.position].replacingOccurrences(of: "\(String(currentPlayer.id+1)) ", with: "")
                     currentPlayer.position = currentPlayer.position+1
@@ -87,24 +88,37 @@ class Card {
                 }
             }
         case "↑":
-            for player in 0...posPlayer.count-1 {
-                posPlayer[player] -= W
-                //boardPos[currentPlayer.position] = String(currentPlayer.position-W)
+            for currentPlayer in tmpArrayPlayer {
+                let res = calculateAvailablePosBourasque(currentPlayer: currentPlayer, boardInstr: boardInstruction, H: H, W: W, needle: needle, deadline: &deadline)
+                if (res.0) {
+                    boardPos[currentPlayer.position] = boardPos[currentPlayer.position].replacingOccurrences(of: "\(String(currentPlayer.id+1)) ", with: "")
+                    currentPlayer.position = currentPlayer.position-W
+                    boardPos[currentPlayer.position] = boardPos[currentPlayer.position] + String(currentPlayer.id+1) + " "
+                    posPlayer[currentPlayer.id] = currentPlayer.position
+                }
             }
         case "←":
-            for player in 0...posPlayer.count-1 {
-                posPlayer[player] -= 1
-                //boardPos[currentPlayer.position] = String(currentPlayer.position-1)
+            for currentPlayer in tmpArrayPlayer {
+                let res = calculateAvailablePosBourasque(currentPlayer: currentPlayer, boardInstr: boardInstruction, H: H, W: W, needle: needle, deadline: &deadline)
+                if (res.0) {
+                    boardPos[currentPlayer.position] = boardPos[currentPlayer.position].replacingOccurrences(of: "\(String(currentPlayer.id+1)) ", with: "")
+                    currentPlayer.position = currentPlayer.position-1
+                    boardPos[currentPlayer.position] = boardPos[currentPlayer.position] + String(currentPlayer.id+1) + " "
+                    posPlayer[currentPlayer.id] = currentPlayer.position
+                }
             }
         case "↓":
-            for player in 0...posPlayer.count-1 {
-                posPlayer[player] += W
-                //boardPos[currentPlayer.position] = String(currentPlayer.position+W)
+            for currentPlayer in tmpArrayPlayer {
+                let res = calculateAvailablePosBourasque(currentPlayer: currentPlayer, boardInstr: boardInstruction, H: H, W: W, needle: needle, deadline: &deadline)
+                if (res.0) {
+                    boardPos[currentPlayer.position] = boardPos[currentPlayer.position].replacingOccurrences(of: "\(String(currentPlayer.id+1)) ", with: "")
+                    currentPlayer.position = currentPlayer.position+W
+                    boardPos[currentPlayer.position] = boardPos[currentPlayer.position] + String(currentPlayer.id+1) + " "
+                    posPlayer[currentPlayer.id] = currentPlayer.position
+                }
             }
         default:
-            for player in 0...posPlayer.count-1 {
-                //posPlayer[player] = posPlayer[player]
-            }
+            print("ERROR DEV")
         }
     }
     
@@ -163,7 +177,6 @@ class Card {
             } else {
                 posModified = true
             }
-            print("posModified2: ", posModified)
         }
         return (posModified, deadline)
     }
