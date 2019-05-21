@@ -55,7 +55,7 @@ func askNamePlayer(numPlayers: Int) -> [String] {
 }
 
 func welcome() -> (nbP: Int, [String]) { // (nbPlayer: Int, namePlayer: [String])
-    print("WELCOME TO SPACE ENCORDERS\n")
+    print("WELCOME TO SPACE ENCODERS\n")
     print("ENTER THE NUMBER OF PLAYER (2-4): ", terminator: "")
     let nbPlayer = readLine()!
     let enumPlayer = askNamePlayer(numPlayers: Int(nbPlayer)!)
@@ -64,10 +64,10 @@ func welcome() -> (nbP: Int, [String]) { // (nbPlayer: Int, namePlayer: [String]
 
 func displayRules() {
     print("\nGOALS:")
-    print("The goal of this game is to create several algorithms with tiles in order to allow the rocket to take off. The tiles must be well connected ! this game is based on cooperation so you are advised to play with your allies ! But be careful, you have to be fast enough to build everything before the end of time !")
+    print("The goal of this game is to create several algorithms with tiles in order to allow the rocket to take off. The tiles must be well connected !\nThis game is based on cooperation so you are advised to play with your allies !\nBut be careful, you have to be fast enough to build everything before the end of time !")
     
     print("\nRULES:")
-    print("Firsty every player begin in the center of the map (in the same case of the Rocket). The algorithms to build are selected randomly (number of player = number of algorithms to build) ! Each turn, each player can do 4 actions or less. He has the choice between : (1) Draw a card, (2) Move on the map, (3) Explore the map, (4) Remove a tile, (5) Swap a tile, (6) Skip turn. Moreover there are several unforeseen during the game : The storm cards. It happend every end of turn of a player ! The more the gauge is high, the more storm cards are applied ! When every algorithms are well constructed before the end of the deadline and if every player are in the center, the game is win !")
+    print("Firsty every player begin in the center of the map (in the same case of the Rocket).\nThe algorithms to build are selected randomly (number of player = number of algorithms to build) ! Each turn, each player can do 4 actions or less.\nHe has the choice between : (1) Draw a card, (2) Move on the map, (3) Explore the map, (4) Remove a tile, (5) Swap a tile, (6) Skip turn.\nMoreover there are several unforeseen during the game : The storm cards. It happend every end of turn of a player !\nThe more the gauge is high, the more storm cards are applied !\nWhen every algorithms are well constructed before the end of the deadline and if every player are in the center, the game is win !")
     
     print("\nThe effect of action are the followings:\n[Draw a tile] : choose a tile from the draw stack\n[Move on the map] : move on tiles\n[Explore the map] : place a tile on a case adjacent to its position\n[Remove a tile] : remove a tile on a case adjacent to its position\n[Swap a tile] : swap a tile between 2 players\n[Skip turn] : simply skip your turn")
     
@@ -235,8 +235,8 @@ func main(nombreLine: Int, nombreCol: Int) {
     listObjectives.append(objective_checkTask)
     listObjectives.append(objective_checkEngine)
     
-    // Select random objectives depends of the number of players
-    for _ in 0...infoPlayers.0-1 {
+    // Select random objectives depends of the number of players (nb algo = nb player -1) -> cannot play alone
+    for _ in 0...infoPlayers.0-2 {
         let randObj = Int.random(in: 0...(listObjectives.count-1))
         listTiles += listObjectives[randObj]
         listObjectives.remove(at: randObj)
