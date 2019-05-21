@@ -13,7 +13,7 @@ You need to install these things below to be able to run the project on your loc
 
 * macOS High Sierra Version 10.13.6 or later
 * Xcode Version 10.1 or later (Terminal Xcode)
-* Swift Version 4 or 5  (Terminal)
+* Swift Version 4.2.1  (Terminal)
 
 ### Installing
 
@@ -36,6 +36,34 @@ git checkout devInf
 ```
 cd SeriousGame/
 ```
+
+To install on Ubuntu you have to upgrade your swift version to 4.2.1
+
+For Ubuntu 16.04 follow the next steps
+
+```
+sudo apt-get install clang
+
+sudo apt-get install libcurl3 libpython2.7 libpython2.7-dev 
+
+wget https://swift.org/builds/swift-4.2.1-release/ubuntu1604/swift-4.2.1-RELEASE/swift-4.2.1-RELEASE-ubuntu16.04.tar.gz
+
+mkdir ~/swift
+
+tar -xvzf swift-4.2.1-RELEASE-ubuntu16.04.tar.gz -C ~/swift
+
+sudo nano ~/.bashrc
+
+export PATH=~/swift/swift-4.2.1-RELEASE-ubuntu16.04/usr/bin:$PATH
+```
+Then verify the new version is correctly install
+
+```
+swift –-version
+```
+
+If you are on Ubuntu 18.04 or later, simply replace every *16.04* by *18.04*
+
 
 You have now access of every files of the implementation. 
 
