@@ -89,19 +89,26 @@ def fill():
 
 """Compte à rebours"""
 #while sans liste (facile)
-def countdown_1(x):
+def countdown_1():
+    x = 10
     while x != 0:
         print(x)
         x = x-1
     return 'Décollage !!!'
+
+def countdown_2():
+    for i = 10 to 0:
+        print(i)
+    return None
+
+ 
 
 """gérer les membres"""
 
 #Vérifier nombre de passagers(moyen)
 
 def check_team(team):
-    global n
-    for i in team:
+    for i = 0 to length(team):
         n += 1
         if n == nb_team:
             return 'les ',n,' membres sont à bord'
@@ -110,25 +117,31 @@ def check_team(team):
 dist_lune = 1000
 conso_fusee = 50
 fuel = (dist_lune/conso_fusee)*2
-def check_fuel():
-    if fuel > (dist_lune/conso_fusee)*2:
-        return "fuel ok"
+def fill_fuel_1(cur_fuel,volume):
+    while cur_fuel < volume:
+        fill()
+    return "fuel ok"
+
+'''def fill_fuel_2(cur_fuel,volume):
+    if cur_fuel >= volume:
+        fill()
     else:
-        while fuel < (dist_lune/conso_fusee)*2:
-            fill()
-        return "fuel ok"
-        
+        return None'''
 
 #Phases de vol
 cur_dist = 0
 state = ''
-def auto_pilot():
-    if cur_dist < (1/3)*dist_lune:
-        state = 'take off'
-    elif cur_dist > (2/3)*dist_lune:
-        state = 'landing'
+def auto_pilot_1(state,x,y):
+    if state in range(x,y):
+        fly()
     else:
-        state = 'fly'
+        return None
+
+def auto_pilot_2(state,x,y):
+    while state in range(x,y):
+        fly()
+    return None
+
 
 #Check job
 team = ['Alice', 'Bob', 'Alan', 'Lena', 'Edgar']
@@ -142,13 +155,14 @@ def check_task():
 #check moteur
 right_temp = 50
 temp = 0
-def check_engine():
+def check_engine(temp,right_temp):
     if temp > right_temp:
-        return 'prêt pour le décollage'
+        cool()
+    elif temp < right_temp:
+        warm()
     else:
-        while temp != right_temp:
-            warm()
-        return "engine ok"
+        return None
+
 
 #itinéraire??
 # assignier tache aux membres (tableau)
