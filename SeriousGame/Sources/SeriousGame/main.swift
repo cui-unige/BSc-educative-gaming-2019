@@ -108,6 +108,23 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
     
     // definition of the needle
     var needle = "→"
+    var nbCardPerJauge: Int
+    var jaugeBar: String
+    
+    switch numberPlayer {
+    case 2:
+        jaugeBar = String(repeating: "-", count: 3*2-1)
+        jaugeBar += "↑"
+    case 3:
+        jaugeBar = String(repeating: "-", count: 2*2-1)
+        jaugeBar += "↑"
+    case 4:
+        jaugeBar = String(repeating: "-", count: 1*2-1)
+        jaugeBar += "↑"
+    default:
+        jaugeBar = ""
+        print("ERROR DEV")
+    }
     
     // define if press action "Skip turn"
     var skipTurn = false
@@ -138,6 +155,9 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
                 
                 // display wind direction
                 print("The wind direction is: ", needle)
+                print("The storm gauge:\n")//, Int(gameStack.jaugeStorm))
+                print("1    2        3        4      5    X")
+                print(jaugeBar)
                 print("\nACTION NUMBER: \(numAct+1)")
                 var res = Actions.actionPlayer(currentPlayer: arrayAllPlayers[turnPlayer], arrayP: arrayAllPlayers, nbP: numberPlayer, listTiles: &tmpListTiles, nbVisibleTiles: &visibleTiles, boardCase: &tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: &tmpBoardInstruction, instrPlayer: &tmpInstrPlayer, boardLock: &tmpBoardLock, H: H, W: W, skipTurn: &skipTurn)
                 if (skipTurn == true) {
@@ -148,9 +168,27 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
             }
             
         }
+        print("la :", gameStack.jaugeStorm)
+        print(jaugeBar)
+        //let nbCardPerJauge = Int(ceil(gameStack.jaugeStorm/5))
         
         // action storm stack
-        let nbCardPerJauge = Int(ceil(gameStack.jaugeStorm/5))
+        // fix robustesse
+        if (1...2 ~= gameStack.jaugeStorm) {
+            nbCardPerJauge = 1
+        } else if (3...7 ~= gameStack.jaugeStorm) {
+            nbCardPerJauge = 2
+        } else if (8...12 ~= gameStack.jaugeStorm) {
+            nbCardPerJauge = 3
+        } else if (13...16 ~= gameStack.jaugeStorm) {
+            nbCardPerJauge = 4
+        } else if (17...19 ~= gameStack.jaugeStorm) {
+            nbCardPerJauge = 5
+        } else {
+            nbCardPerJauge = 6
+            deadline = 0
+        }
+        
         let changeCardsStorm = gameStack.stormStack.prefix(nbCardPerJauge)
         gameStack.stormStack.removeFirst(nbCardPerJauge)
         gameStack.stormStack += changeCardsStorm
@@ -181,6 +219,9 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
                 gameStack.actionBourasque(nbPlayer: numberPlayer, arrayPlayer: arrayAllPlayers, boardCase: tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: tmpBoardInstruction, W: W, H: H, needle: needle, deadline: &deadline)
             }
         }
+        
+        jaugeBar = String(repeating: "-", count: Int(gameStack.jaugeStorm)*2-1)
+        jaugeBar += "↑"
         let _ = Display.displayBoard(boardInit: &tmpBoardCase, displayPos: &tmpBoardPos, displayInstruction: &tmpBoardInstruction, H: H, W: W, posPlayer: &tmpPosPlayer, instrPlayer: &tmpInstrPlayer, displayLock: &tmpBoardLock, bd: &bd)
         
         turnPlayer = (turnPlayer + 1) % numberPlayer
@@ -245,8 +286,8 @@ func main(nombreLine: Int, nombreCol: Int) {
     // All tiles available for the game (concatenation of objectives)
     print("\nlist of Tiles for this game: --> \(listTiles)\n")
     
-    // Duplication of the tiles implies don't need the whole tiles to win the game ??
-    //listTiles += listTiles
+    // Duplication of the tiles implies don't need the whole tiles to win the game
+    listTiles += listTiles
     
     // insert empty tiles
     listTiles += emptyTiles

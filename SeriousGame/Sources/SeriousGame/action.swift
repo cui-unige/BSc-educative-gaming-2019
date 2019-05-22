@@ -64,7 +64,7 @@ class Action {
         } */
         
         else if (actionSelected == "4") {
-            let resRemoveTile = removeTile(currentPlayer: currentPlayer, boardInstruction: &boardInstruction, listTiles: &listTiles, H: H, W: W)
+            let resRemoveTile = removeTile(currentPlayer: currentPlayer, boardInstruction: &boardInstruction, listTiles: &listTiles, boardPos: &boardPos, posPlayer: &posPlayer, H: H, W: W)
             if !(resRemoveTile.3) {
                 let _ = actionPlayer(currentPlayer: currentPlayer, arrayP: arrayP, nbP: nbP, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W, skipTurn: &skipTurn)
             } else {
@@ -307,7 +307,7 @@ class Action {
         return availablePos
     }
     
-    func removeTile(currentPlayer: Player, boardInstruction: inout [String], listTiles: inout [String], H: Int, W: Int) -> (Player, [String], [String], Bool) {
+    func removeTile(currentPlayer: Player, boardInstruction: inout [String], listTiles: inout [String], boardPos: inout [String], posPlayer: inout [Int], H: Int, W: Int) -> (Player, [String], [String], Bool) {
         var valideAction: Bool
         let availablePosRemoveRes = calculateAvailablePos(currentPlayer: currentPlayer, boardInstr: boardInstruction, H: H, W: W, action: "POS")
         var availablePosRemove: [Int] = []
@@ -316,11 +316,19 @@ class Action {
             if !(i == center) {
                 availablePosRemove.append(i)
             }
+            var ind = 0
+            for pP in posPlayer {
+                if (availablePosRemove.contains(pP)) {
+                    availablePosRemove.remove(at: ind)
+                } else {
+                    ind += 1
+                }
+            }
         }
         
         if (availablePosRemove.isEmpty) {
             valideAction = false
-            print("There are no tile all around your position !\n")
+            print("There are no tile to remove all around your position !\n")
         } else {
             print("Select a position to remove the tile on: ")
             var cmpt = 0
