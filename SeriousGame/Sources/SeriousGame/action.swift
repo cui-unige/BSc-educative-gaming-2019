@@ -188,7 +188,7 @@ class Action {
             print("\(color)0\(blue)Select a position: \(color)0\(none)")
             var cmpt = 0
             for pos in availablePos {
-                print("\(cmpt+1) - Case numéro: \(pos)")
+                print("\(cmpt+1) - Case number: \(pos)")
                 cmpt += 1
             }
             let posSelected = Int(readLine()!)!-1

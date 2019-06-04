@@ -26,14 +26,15 @@ let Actions = Action()
 let maxPlayer = 4
 
 // definition of storm cards
-let eclair = "Eclair"
-let bourasque = "Bourasque"
-let ventTourneHoraire = "Vent Tourne Horaire"
-let ventTourneAntiHoraire = "Vent Tourne Anti-Horaire"
-let dechainement = "Orage se dechaine"
-let dechainement2 = "Orage se dechaine + Melange pile"
+let eclair = "Storm"
+let bourasque = "Squall"
+let ventTourneHoraire = "Wind turn clockwise"
+let ventTourneAntiHoraire = "Wind turn counter cw"
+let dechainement = "Storm rages on"
+let dechainement2 = "Storm rages on & shuffle"
 
 // definition of equip cards  --> REMOVE
+/*
 let threeAction = "+3 action"
 let swapTile = "Echanger une tuiles"
 let shieldBourasque = "Protege de la bourasque"
@@ -44,6 +45,7 @@ let addPV = "+1 PV"
 let shieldStorm = "Protege de l'eclair"
 let reverseStack = "Reverse()"
 let shuffleStack = "Shuffle()"
+ */
 
 // definition of objectives
 let objective_countdown: [String] = ["BEGIN", "while", "n", "! = 0", "show(n)", "n--", "END"]
@@ -87,7 +89,7 @@ func displayRules() {
     
     print("\nThe effect of action are the followings:\n\(color)0\(cyan)[Draw a tile]\(color)0\(none) : choose a tile from the draw stack\n\(color)0\(cyan)[Move on the map]\(color)0\(none) : move on tiles\n\(color)0\(cyan)[Explore the map]\(color)0\(none) : place a tile on a case adjacent to its position\n\(color)0\(cyan)[Remove a tile]\(color)0\(none) : remove a tile on a case adjacent to its position\n\(color)0\(cyan)[Swap a tile]\(color)0\(none) : swap a tile between 2 players\n\(color)0\(cyan)[Skip turn] \(color)0\(none): simply skip your turn")
     
-    print("\nThe effect of storm cards are the followings:\n\(color)0\(magenta)[Vent Tourne Horaire]\(color)0\(none) : change the wind direction clockwise\n\(color)0\(magenta)[Vent Tourne Anti-Horaire] \(color)0\(none): change the wind direction counter clockwise\n\(color)0\(magenta)[Eclair]\(color)0\(none) : remove 1 HP of deadline\n\(color)0\(magenta)[Bourasque] \(color)0\(none): push all player (1 case) in the wind direction\n\(color)0\(magenta)[Orage se dechaine] \(color)0\(none): increase by 1 the storm gauge\n\(color)0\(magenta)[Orage se dechaine + Melange pile] \(color)0\(none): same + remix all storm cards")
+    print("\nThe effect of storm cards are the followings:\n\(color)0\(magenta)[Wind Turn clockwise]\(color)0\(none) : change the wind direction clockwise\n\(color)0\(magenta)[Wind turn counter cw] \(color)0\(none): change the wind direction counter clockwise\n\(color)0\(magenta)[Storm]\(color)0\(none) : remove 1 HP of deadline\n\(color)0\(magenta)[Squall] \(color)0\(none): push all player (1 case) in the wind direction\n\(color)0\(magenta)[Storm rages on] \(color)0\(none): increase by 1 the storm gauge\n\(color)0\(magenta)[Storm rages on & shuffle] \(color)0\(none): same + remix all storm cards")
     
     print("\n\(color)3\(red)You can find the whole goals and rules in the file [goalsNrules]\(color)0\(none)")
     
