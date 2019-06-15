@@ -48,18 +48,14 @@ let shuffleStack = "Shuffle()"
  */
 
 // definition of objectives
-let objective_countdown: [String] = ["BEGIN", "while", "n", "! = 0", "show(n)", "n--", "END"]
-let objective_ckeckTeam: [String] = ["BEGIN", "for", "i in list", "n++", "if", "n", "== len(list)", "END"]
-let objective_checkFuel: [String] = ["BEGIN", "if", "fuel", ">= (d_l/c_f)*2", "check()", "else", "while", "cur_fuel", "!= fuel", "fill", "END"]
+let objective_countdown: [String] = ["BEGIN", "[VAR] = 10", "WHILE", "[VAR] != 0", "SHOW([VAR])", "[VAR] = [VAR]-1", "ENDWHILE", "END", "BEGIN", "FOR", "[VAR] = 10 TO 0", "SHOW([VAR])", "ENDFOR", "END"]
+let objective_ckeckTeam: [String] = ["BEGIN", "[VAR] = FALSE", "NB_T != LEN(T)", "[VAR] = TRUE", "ENDWHILE", "END", "BEGIN", "IF", "NB_T == LEN(T)", "ENDIF", "END"]
 /*
-let objective_countdown: [String] = ["BEGIN", "while", "n", "! = 0", "show(n)", "n--", "END"]
-let objective_ckeckTeam: [String] = ["BEGIN", "for", "i in list", "n++", "if", "n", "== len(list)", "END"]
 let objective_checkFuel: [String] = ["BEGIN", "if", "fuel", ">= (d_l/c_f)*2", "check()", "else", "while", "cur_fuel", "!= fuel", "fill", "END"]
- */
 let objective_autoPilot: [String] = ["BEGIN", "if", "cur_dist", "<= (1/3)*d_lune", "s = take_off", "else if", "cur_dist", "> (2/3)*d_lune", "s = landing", "else", "s = fly", "END"]
 let objective_checkTask: [String] = ["BEGIN", "for", "i in list", "if", "check(i)", "== true", "continue", "else", "check(i) == true", "END"]
 let objective_checkEngine: [String] = ["BEGIN", "if", "temp", "> right_temp", "check()", "else", "while", "temp", "!= right_temp", "warm()", "check()", "END"]
-
+*/
 
 
 func askNamePlayer(numPlayers: Int) -> [String] {
@@ -181,22 +177,22 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
             print("The deadline is over !\nGAME OVER")
         } else {
             print("\(color)1\(red)The deadline: ", deadline)
-            print("\(color)0\(none)\nTURN OF PLAYER \(arrayAllPlayers[turnPlayer].id+1) : \(arrayAllPlayers[turnPlayer].nom)")
+            print("\(color)1\(none)\nTURN OF PLAYER \(arrayAllPlayers[turnPlayer].id+1) : \(arrayAllPlayers[turnPlayer].nom)")
             let nbActionPerPlayer = 4
             for numAct in 0...nbActionPerPlayer-1 {
                 // display storm cards incoming
                 print("\nThe next storm cards are :", terminator: "")
                 for card in 0...4 {
-                 print(" -> [\(gameStack.stormStack[card])]", terminator: "")
+                 print(" → [\(gameStack.stormStack[card])]", terminator: "")
                 }
-                print(" -> ...")
+                print(" → ...")
                 
                 // display wind direction
                 print("The wind direction is: ", needle)
                 print("The storm gauge:\n")//, Int(gameStack.jaugeStorm))
                 print("1    2        3        4      5    \(color)0\(red)X\(color)0\(none)")
                 print(jaugeBar)
-                print("\n\(color)0\(green)ACTIONS REMINING FOR PLAYER \(arrayAllPlayers[turnPlayer].id+1) (\(arrayAllPlayers[turnPlayer].nom)): \(4 - numAct)\(color)0\(none)")
+                print("\n\(color)1\(green)ACTIONS REMINING FOR PLAYER \(arrayAllPlayers[turnPlayer].id+1) (\(arrayAllPlayers[turnPlayer].nom)): \(4 - numAct)\(color)0\(none)")
                 var res = Actions.actionPlayer(currentPlayer: arrayAllPlayers[turnPlayer], arrayP: arrayAllPlayers, nbP: numberPlayer, listTiles: &tmpListTiles, nbVisibleTiles: &visibleTiles, boardCase: &tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: &tmpBoardInstruction, instrPlayer: &tmpInstrPlayer, boardLock: &tmpBoardLock, H: H, W: W, skipTurn: &skipTurn)
                 if (skipTurn == true) {
                     skipTurn = false
@@ -238,30 +234,32 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
         gameStack.stormStack.removeFirst(nbCardPerJauge)
         gameStack.stormStack += changeCardsStorm
         
+        var logStormCards: String = ""
+        
         for changeCards in 0...changeCardsStorm.count-1 {
             // case of "Orage se dechaine" -> storm rages on
             if (changeCardsStorm[changeCards] == dechainement) {
-                gameStack.actionDechaine(objStack: gameStack)
+                gameStack.actionDechaine(objStack: gameStack, log: &logStormCards)
             }
             // case of "Orage se dechaine + Melange" -> storm rages on shuffle
             if (changeCardsStorm[changeCards] == dechainement2) {
-                gameStack.actionDechaineMel(objStack: gameStack)
+                gameStack.actionDechaineMel(objStack: gameStack, log: &logStormCards)
             }
             // case of "Eclair" -> storms
             if (changeCardsStorm[changeCards] == eclair) {
-                gameStack.actionEclair(currentDeadLine: &deadline)
+                gameStack.actionEclair(currentDeadLine: &deadline, log: &logStormCards)
             }
             // case of "Vent Tourne Horaire" -> wind turn clock
             if (changeCardsStorm[changeCards] == ventTourneHoraire) {
-                gameStack.actionVentTourneHoraire(needle: &needle)
+                gameStack.actionVentTourneHoraire(needle: &needle, log: &logStormCards)
             }
             // case of "Vent Tourne Anti-Horaire" -> wind turn count clock
             if (changeCardsStorm[changeCards] == ventTourneAntiHoraire) {
-                gameStack.actionVentTourneAntiHoraire(needle: &needle)
+                gameStack.actionVentTourneAntiHoraire(needle: &needle, log: &logStormCards)
             }
             // case of "Bourasque" -> squalls
             if (changeCardsStorm[changeCards] == bourasque) {
-                gameStack.actionBourasque(nbPlayer: numberPlayer, arrayPlayer: arrayAllPlayers, boardCase: tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: tmpBoardInstruction, W: W, H: H, needle: needle, deadline: &deadline)
+                gameStack.actionBourasque(nbPlayer: numberPlayer, arrayPlayer: arrayAllPlayers, boardCase: tmpBoardCase, boardPos: &tmpBoardPos, posPlayer: &tmpPosPlayer, boardInstruction: tmpBoardInstruction, W: W, H: H, needle: needle, deadline: &deadline, log: &logStormCards)
             }
         }
         
@@ -269,6 +267,7 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
         jaugeBar += "\(color)0\(red)↑\(color)0\(none)"
         let _ = Display.displayBoard(boardInit: &tmpBoardCase, displayPos: &tmpBoardPos, displayInstruction: &tmpBoardInstruction, H: H, W: W, posPlayer: &tmpPosPlayer, instrPlayer: &tmpInstrPlayer, displayLock: &tmpBoardLock, bd: &bd)
         print("\(color)3\(red)You can see objectives in the file [objectives]\(color)0\(none)")
+        print("\n\(color)0\(cyan)Result of storm cards:\(color)0\(none)", logStormCards)
         print("\(color)1\(red)Scroll up to see the log of your last action\(color)0\(none)\n")
         
         
@@ -277,6 +276,8 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
 }
 
 func main(nombreLine: Int, nombreCol: Int) {
+    
+    
     // set terminal theme
     print("\(color)0\(none)")
     // Get informations of players - number - name
@@ -313,18 +314,12 @@ func main(nombreLine: Int, nombreCol: Int) {
     var listTiles: [String] = []
     var listObjectives: [[String]] = []
     
-    // add empty tiles
-    var emptyTiles: [String] = []
-    for _ in 0...(infoPlayers.0)*3 {
-        emptyTiles.append("<< Empty >>")
-    }
-    
     listObjectives.append(objective_countdown)
     listObjectives.append(objective_ckeckTeam)
-    listObjectives.append(objective_checkFuel)
+    /*listObjectives.append(objective_checkFuel)
     listObjectives.append(objective_autoPilot)
     listObjectives.append(objective_checkTask)
-    listObjectives.append(objective_checkEngine)
+    listObjectives.append(objective_checkEngine)*/
     
     // Select random objectives depends of the number of players (nb algo = nb player -1) -> cannot play alone
     for _ in 0...infoPlayers.0-2 {
@@ -333,12 +328,18 @@ func main(nombreLine: Int, nombreCol: Int) {
         listObjectives.remove(at: randObj)
     }
     
+    // add empty tiles
+    var emptyTiles: [String] = []
+    for _ in 0...(listTiles.count)/2 {
+        emptyTiles.append("<< Empty >>")
+    }
+    
     // All tiles available for the game (concatenation of objectives)
     //print("\nlist of Tiles for this game: --> \(listTiles)\n")
     print("\(color)3\(red)You can see objectives in the file [objectives]\(color)0\(none)\n")
     
     // Duplication of the tiles implies don't need the whole tiles to win the game
-    listTiles += listTiles
+    //listTiles += listTiles
     
     // insert empty tiles
     listTiles += emptyTiles
