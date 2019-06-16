@@ -88,6 +88,7 @@ func displayRules() {
     print("\nThe effect of storm cards are the followings:\n\(color)0\(magenta)[Wind Turn clockwise]\(color)0\(none) : change the wind direction clockwise\n\(color)0\(magenta)[Wind turn counter cw] \(color)0\(none): change the wind direction counter clockwise\n\(color)0\(magenta)[Storm]\(color)0\(none) : remove 1 HP of deadline\n\(color)0\(magenta)[Squall] \(color)0\(none): push all player (1 case) in the wind direction\n\(color)0\(magenta)[Storm rages on] \(color)0\(none): increase by 1 the storm gauge\n\(color)0\(magenta)[Storm rages on & shuffle] \(color)0\(none): same + remix all storm cards")
     
     print("\n\(color)3\(red)You can find the whole goals and rules in the file [goalsNrules]\(color)0\(none)")
+    print("\n\(color)3\(red)You can also find the algorithms in the file [objectives]\(color)0\(none)")
     
     print("\n\nPress \(color)0\(red)[ENTER]\(color)0\(none) to begin the game !")
     let _ = readLine()
@@ -115,8 +116,9 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
     // storm stack : cards depends of number of player ?? -- REMOVE EQUIP
     // initialisation of the stack
     let gameStack = Card(stormStack: [], equipStack: [], jaugeStorm: Double(5-numberPlayer))
-    gameStack.stormStack.append(contentsOf: [eclair, eclair, eclair, bourasque, bourasque, bourasque, bourasque, ventTourneHoraire, ventTourneAntiHoraire, dechainement, dechainement, dechainement2])
-    gameStack.stormStack.shuffle()
+    /*gameStack.stormStack.append(contentsOf: [eclair, eclair, eclair, bourasque, bourasque, bourasque, bourasque, ventTourneHoraire, ventTourneAntiHoraire, dechainement, dechainement, dechainement2])
+    gameStack.stormStack.shuffle()*/
+    gameStack.stormStack.append(contentsOf: [bourasque, eclair, ventTourneAntiHoraire, dechainement, bourasque, bourasque, ventTourneHoraire, eclair, bourasque, dechainement, dechainement2])
     
     // for testing
     //gameStack.stormStack[2] = "Bourasque"
@@ -148,18 +150,19 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
     bd = false
     
     // fill hand of players
-    print("\n\(color)1\(green)Every player have to fill his hand with 3 tiles\(color)0\(none)\n")
+    print("\n\(color)1\(green)Every player have to fill his hand with 5 tiles\(color)0\(none)\n")
     for players in 0...numberPlayer-1 {
         print("\(color)1\(cyan)Selection menu for \(arrayAllPlayers[players].nom):\(color)0\(none)")
-        var tabLog = Array(repeating: "", count: 3)
+        var tabLog = Array(repeating: "", count: 5)
         var c = 0
-        for _ in 0...2 {
+        for _ in 0...4 {
             let resFill = Actions.drawACard(currentPlayer: arrayAllPlayers[players], listTiles: &tmpListTiles, nbVisibleTiles: &visibleTiles)
+            tmpListTiles = resFill.1
             tabLog[c] = resFill.2
             c += 1
         }
         print("\n\(color)1\(cyan)Result of the selection: \(color)1\(none)")
-        for i in 0...2 {
+        for i in 0...4 {
             print("\(color)0\(green)\(tabLog[i])", terminator: "")
         }
         print("\(color)0\(none)\n")
@@ -335,7 +338,7 @@ func main(nombreLine: Int, nombreCol: Int) {
     }
     
     // All tiles available for the game (concatenation of objectives)
-    //print("\nlist of Tiles for this game: --> \(listTiles)\n")
+    print("\nlist of Tiles for this game: --> \(listTiles)\n")
     print("\(color)3\(red)You can see objectives in the file [objectives]\(color)0\(none)\n")
     
     // Duplication of the tiles implies don't need the whole tiles to win the game

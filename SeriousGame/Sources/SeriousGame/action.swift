@@ -39,12 +39,13 @@ class Action {
             if (listTiles == []) {
                 print("\(color)0\(red)No more tiles in the set !\(color)0\(none)")
                 let _ = actionPlayer(currentPlayer: currentPlayer, arrayP: arrayP, nbP: nbP, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W, skipTurn: &skipTurn)
-            } else if (currentPlayer.cartes.count > 2) {
-                print("\(color)0\(blue)You already have 3 tiles in your hand ! You can change one card !\(color)0\(none)")
+            } else if (currentPlayer.cartes.count > 4) {
+                print("\(color)0\(blue)You already have 5 tiles in your hand ! You can change one card !\(color)0\(none)")
                 let resReplace = replaceACard(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles)
                 listTiles = resReplace.1
                 return (resReplace.0, resReplace.1, boardCase, boardPos, posPlayer, boardInstruction, instrPlayer, boardLock, arrayP, resReplace.2)
             } else {
+                print("List des tuiles :", listTiles)
                 let resDraw = drawACard(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles)
                 listTiles = resDraw.1
                 return (resDraw.0, resDraw.1, boardCase, boardPos, posPlayer, boardInstruction, instrPlayer, boardLock, arrayP, resDraw.2)
