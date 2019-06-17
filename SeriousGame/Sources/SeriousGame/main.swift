@@ -116,9 +116,9 @@ func beginGame(numberPlayer: Int, player1: Player, player2: Player, player3: Pla
     // storm stack : cards depends of number of player ?? -- REMOVE EQUIP
     // initialisation of the stack
     let gameStack = Card(stormStack: [], equipStack: [], jaugeStorm: Double(5-numberPlayer))
-    /*gameStack.stormStack.append(contentsOf: [eclair, eclair, eclair, bourasque, bourasque, bourasque, bourasque, ventTourneHoraire, ventTourneAntiHoraire, dechainement, dechainement, dechainement2])
-    gameStack.stormStack.shuffle()*/
-    gameStack.stormStack.append(contentsOf: [bourasque, eclair, ventTourneAntiHoraire, dechainement, bourasque, bourasque, ventTourneHoraire, eclair, bourasque, dechainement, dechainement2])
+    gameStack.stormStack.append(contentsOf: [eclair, eclair, eclair, bourasque, bourasque, bourasque, bourasque, ventTourneHoraire, ventTourneAntiHoraire, dechainement, dechainement, dechainement2])
+    gameStack.stormStack.shuffle()
+    /*gameStack.stormStack.append(contentsOf: [bourasque, eclair, ventTourneAntiHoraire, dechainement, bourasque, bourasque, ventTourneHoraire, eclair, bourasque, dechainement, dechainement2])*/
     
     // for testing
     //gameStack.stormStack[2] = "Bourasque"
