@@ -8,6 +8,7 @@
 
 import Foundation
 
+// this class allows to manage the players in the game
 class Player {
     var id: Int
     var nom: String

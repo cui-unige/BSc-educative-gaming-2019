@@ -8,6 +8,7 @@
 
 import Foundation
 
+// this class define the actions of players
 class Action {
     
     let color = "\u{001B}["
@@ -23,7 +24,8 @@ class Action {
     
     let Interp = Interpretor()
     
-    // return (Player info), (list of tiles in stack not selected), (board num of case), (board position of player) , (array of pos player (for display)), ...
+    // main function
+    // display a menu to select an action
     func actionPlayer(currentPlayer: Player, arrayP: [Player], nbP: Int, listTiles: inout [String], nbVisibleTiles: inout Int, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], boardInstruction: inout [String], instrPlayer: inout [String], boardLock: inout [String], H: Int, W: Int, skipTurn: inout Bool) -> (Player,  [String], [String], [String], [Int], [String], [String], [String], [Player], String) {
         print("Your set of tiles: ", currentPlayer.cartes)
         for player in arrayP {
@@ -35,29 +37,42 @@ class Action {
         print("1 - Draw a tile          2 - Move on the map\n3 - Explore the map      4 - Remove a tile\n5 - Swap a tile          6 - Skip turn\n")
         let actionSelected = readLine()
         print("\(color)0\(none)")
+        
+        // depending of the selected action the function call is different
+        // for each action try if the selected action is valid with the flag
+        // "Draw a card"
         if (actionSelected == "1") {
+            // try enough cards in the stack
             if (listTiles == []) {
                 print("\(color)0\(red)No more tiles in the set !\(color)0\(none)")
                 let _ = actionPlayer(currentPlayer: currentPlayer, arrayP: arrayP, nbP: nbP, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W, skipTurn: &skipTurn)
-            } else if (currentPlayer.cartes.count > 4) {
+            }
+            // call two different function depending the number of cards in the hand
+            else if (currentPlayer.cartes.count > 4) {
                 print("\(color)0\(blue)You already have 5 tiles in your hand ! You can change one card !\(color)0\(none)")
+                // to replace a card
                 let resReplace = replaceACard(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles)
                 listTiles = resReplace.1
                 return (resReplace.0, resReplace.1, boardCase, boardPos, posPlayer, boardInstruction, instrPlayer, boardLock, arrayP, resReplace.2)
             } else {
                 print("List des tuiles :", listTiles)
+                // to draw a card
                 let resDraw = drawACard(currentPlayer: currentPlayer, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles)
                 listTiles = resDraw.1
                 return (resDraw.0, resDraw.1, boardCase, boardPos, posPlayer, boardInstruction, instrPlayer, boardLock, arrayP, resDraw.2)
             }
-        } else if (actionSelected == "2") {
+        }
+        // "Move on the map"
+        else if (actionSelected == "2") {
             let resMove = movePlayer(currentPlayer: currentPlayer, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstr: boardInstruction, H: H, W: W)
             if !(resMove.4) {
                 let _ = actionPlayer(currentPlayer: currentPlayer, arrayP: arrayP, nbP: nbP, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W, skipTurn: &skipTurn)
             } else {
                 return (resMove.0, listTiles, resMove.1, resMove.2, resMove.3, boardInstruction, instrPlayer, boardLock, arrayP, resMove.5)
             }
-        } else if (actionSelected == "3") {
+        }
+        // "Explore the map"
+        else if (actionSelected == "3") {
             let resExplore = exploreMap(currentPlayer: currentPlayer, boardCase: &boardCase, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, H: H, W: W)
             if !(resExplore.4) {
                 let _ = actionPlayer(currentPlayer: currentPlayer, arrayP: arrayP, nbP: nbP, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W, skipTurn: &skipTurn)
@@ -65,6 +80,7 @@ class Action {
                 return (resExplore.0, listTiles, resExplore.1, boardPos, posPlayer, resExplore.2, resExplore.3, boardLock, arrayP, resExplore.5)
             }
         }
+        // "Remove a tile"
         else if (actionSelected == "4") {
             let resRemoveTile = removeTile(currentPlayer: currentPlayer, boardInstruction: &boardInstruction, listTiles: &listTiles, boardPos: &boardPos, posPlayer: &posPlayer, H: H, W: W)
             if !(resRemoveTile.3) {
@@ -72,14 +88,18 @@ class Action {
             } else {
                 return (resRemoveTile.0, resRemoveTile.2, boardCase, boardPos, posPlayer, resRemoveTile.1, instrPlayer, boardLock, arrayP, resRemoveTile.4)
             }
-        } else if (actionSelected == "5") {
+        }
+        // "Swap a tile"
+        else if (actionSelected == "5") {
             let resSwapTile = swapTile(currentPlayer: currentPlayer, arrayPlayer: arrayP, nbP: nbP)
             if !(resSwapTile.2) {
                 let _ = actionPlayer(currentPlayer: currentPlayer, arrayP: arrayP, nbP: nbP, listTiles: &listTiles, nbVisibleTiles: &nbVisibleTiles, boardCase: &boardCase, boardPos: &boardPos, posPlayer: &posPlayer, boardInstruction: &boardInstruction, instrPlayer: &instrPlayer, boardLock: &boardLock, H: H, W: W, skipTurn: &skipTurn)
             } else {
                 return (currentPlayer, listTiles, boardCase, boardPos, posPlayer, boardInstruction, instrPlayer, boardLock, arrayP, resSwapTile.3)
             }
-        } else if (actionSelected == "6") {
+        }
+        // "Skip turn"
+        else if (actionSelected == "6") {
             skipTurn = true
             let logSkip = "\(color)1\(green)* You skiped your turn \(color)0\(none)\n"
             return (currentPlayer, listTiles, boardCase, boardPos, posPlayer, boardInstruction, instrPlayer, boardLock, arrayP, logSkip)
@@ -88,10 +108,12 @@ class Action {
         return (currentPlayer, listTiles, boardCase, boardPos, posPlayer, boardInstruction, instrPlayer, boardLock, arrayP, "")
     }
     
+    // allows players to select a card in the stack
     func drawACard(currentPlayer: Player, listTiles: inout [String], nbVisibleTiles: inout Int) -> (Player, [String], String) {
         var resRandomTiles = randomTiles(list: &listTiles, nbVisibleTiles: &nbVisibleTiles)
         print("\(color)0\(blue)Select a tile: \(color)0\(none)")
         var cmpt = 0
+        // get the tile selected
         for tile in resRandomTiles.1 {
             print("\(cmpt+1) - \(tile)")
             cmpt += 1
@@ -101,7 +123,9 @@ class Action {
             print("\n\(color)0\(red)Incorrect input ! It must be between 1 and \(cmpt)\n\(color)0\(none)")
             tileSelected = Int(readLine()!)!-1
         }
+        // display a log
         let logDrawACard = "\(color)1\(green)* You appended your set with the following tile [\(resRandomTiles.1[tileSelected])]\(color)0\(none)\n"
+        // exchange the cards
         currentPlayer.cartes.append(resRandomTiles.1[tileSelected])
         resRandomTiles.1.remove(at: tileSelected)
         resRandomTiles.0 = resRandomTiles.0 + resRandomTiles.1
@@ -109,6 +133,7 @@ class Action {
         return (currentPlayer, resRandomTiles.0, logDrawACard)
     }
     
+    // replace if already five cards
     func replaceACard(currentPlayer: Player, listTiles: inout [String], nbVisibleTiles: inout Int) -> (Player, [String], String) {
         var resRandomTiles = randomTiles(list: &listTiles, nbVisibleTiles: &nbVisibleTiles)
         print("Select a tile: ")
@@ -123,7 +148,7 @@ class Action {
             print("\n\(color)0\(red)Incorrect input ! It must be between 1 and \(cmpt)\n\(color)0\(none)")
             tileSelected = Int(readLine()!)!-1
         }
-        // if skip
+        // if skip is selected
         if (tileSelected == 3) {
             let logReplaceACard = "\(color)1\(green)* You skiped the replacement\(color)0\(none)\n"
             return (currentPlayer, resRandomTiles.0, logReplaceACard)
@@ -151,7 +176,7 @@ class Action {
         }
     }
     
-    // return : (listTiles, visibleTiles)
+    // get a random set of cards (3) in the stack of the game
     func randomTiles(list: inout [String], nbVisibleTiles: inout Int) -> ([String], [String]) {
         var listUnveiledTiles: [String] = []
         list.shuffle()
@@ -171,6 +196,7 @@ class Action {
         }
     }
     
+    // to move on the map
     func movePlayer(currentPlayer: Player, boardCase: inout [String], boardPos: inout [String], posPlayer: inout [Int], boardInstr: [String], H: Int, W: Int) -> (Player, [String], [String], [Int], Bool, String) {
         var valideAction: Bool
         let posP = currentPlayer.position
@@ -203,7 +229,7 @@ class Action {
         return (currentPlayer, boardCase, boardPos, posPlayer, valideAction, logMovePlayer)
     }
     
-    
+    // to put a tile
     func exploreMap(currentPlayer: Player, boardCase: inout [String], boardInstruction: inout [String], instrPlayer: inout [String], H: Int, W: Int) -> (Player, [String], [String], [String], Bool, String) {
         var valideAction: Bool
         var logExploreMap: String = ""
@@ -238,10 +264,11 @@ class Action {
                     print("\(cmpt+1) - ", pos)
                     cmpt += 1
                 }
+                // get the postion
                 let posSelected = Int(readLine()!)!-1
                 valideAction = true
                 
-                // test if pass the interpretor
+                // FIXME: test if pass the interpretor
                 let resInter = Interp.checkTile()
                 if (resInter) {
                     logExploreMap = "\(color)1\(green)* You posed the tile [\(currentPlayer.cartes[tileSelected])] to the position [\(availablePosInstr[posSelected])]\(color)0\(none)\n"
@@ -255,6 +282,8 @@ class Action {
         return (currentPlayer, boardCase, boardInstruction, instrPlayer, valideAction, logExploreMap)
     }
     
+    // allows to get a set of valide postions depending the action selected
+    // check the edge of the board and the tiles already laid
     func calculateAvailablePos(currentPlayer: Player, boardInstr: [String], H: Int, W: Int, action: String) -> [Int] {
         var availablePos: [Int] = []
         // calculate available positions
@@ -317,12 +346,14 @@ class Action {
         return availablePos
     }
     
+    // remove a tile in the board
     func removeTile(currentPlayer: Player, boardInstruction: inout [String], listTiles: inout [String], boardPos: inout [String], posPlayer: inout [Int], H: Int, W: Int) -> (Player, [String], [String], Bool, String) {
         var valideAction: Bool
         var logRemoveTile: String = ""
         let availablePosRemoveRes = calculateAvailablePos(currentPlayer: currentPlayer, boardInstr: boardInstruction, H: H, W: W, action: "POS")
         var availablePosRemove: [Int] = []
         let center = (H*W)/2
+        // check the possible tiles
         for i in availablePosRemoveRes {
             if !(i == center) {
                 availablePosRemove.append(i)
@@ -347,6 +378,7 @@ class Action {
                 print("\(cmpt+1) - ", pos)
                 cmpt += 1
             }
+            // get the selection
             let posSelected = Int(readLine()!)!-1
             valideAction = true
             // tile removed go back in the game stack
@@ -358,22 +390,25 @@ class Action {
         return (currentPlayer, boardInstruction, listTiles, valideAction, logRemoveTile)
     }
     
+    // exchange a tile between two players
     func swapTile(currentPlayer: Player, arrayPlayer: [Player], nbP: Int) -> (Player, [Player], Bool, String) {
         var valideAction: Bool = true
         var logSwapTile: String = ""
         var tmpArrayPlayer = arrayPlayer.prefix(nbP)
         tmpArrayPlayer.remove(at: currentPlayer.id)
         
+        // get all cards
         var allPlayerCards: [String] = []
         for cardsPlayer in tmpArrayPlayer {
             allPlayerCards += cardsPlayer.cartes
         }
         
+        // check if it's ok for the current player
         if (currentPlayer.cartes.isEmpty) {
             valideAction = false
             print("\(color)0\(red)You cannot swap a tile because your set is empty !\n\(color)0\(none)")
         }
-        // check if possible to swap with a mate
+        // check if it's possible to swap with a mate
         else if (allPlayerCards.isEmpty) {
             valideAction = false
             print("\(color)0\(red)You cannot swap a tile with another player because nobody have a tile !\n\(color)0\(none)")
@@ -387,6 +422,7 @@ class Action {
                     cmpt += 1
                 }
             }
+            // get the player
             let pSelected = Int(readLine()!)!-1
 
             print("\n\(color)0\(blue)Which tile you want swap from your deck? \(color)0\(none)")
@@ -395,6 +431,7 @@ class Action {
                 print("\(cmptY+1) - ", tY)
                 cmptY += 1
             }
+            // get the own card
             let tileYSelected = Int(readLine()!)!-1
             
             print("\n\(color)0\(blue)With which tile from \(tmpArrayPlayer[pSelected].nom)'s deck? \(color)0\(none)")
@@ -403,13 +440,13 @@ class Action {
                 print("\(cmptO+1) - ", tO)
                 cmptO += 1
             }
+            // get the mate's card
             let tileOSelected = Int(readLine()!)!-1
             
             // swap cards
             let remYtile = currentPlayer.cartes[tileYSelected]
             let remOtile = tmpArrayPlayer[pSelected].cartes[tileOSelected]
             logSwapTile = "\(color)1\(green)* You swap a tile with [\(tmpArrayPlayer[pSelected].nom)]\n * Your tile exchanged is [\(remYtile)]\n * \(tmpArrayPlayer[pSelected].nom)'s tile exchanged is [\(remOtile)]\(color)0\(none)\n"
-
             currentPlayer.cartes.remove(at: tileYSelected)
             tmpArrayPlayer[pSelected].cartes.remove(at: tileOSelected)
             currentPlayer.cartes.append(remOtile)

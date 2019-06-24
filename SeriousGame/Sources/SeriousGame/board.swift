@@ -8,8 +8,11 @@
 
 import Foundation
 
+// this class display and update the board
 class Board {
     
+    // function of completion
+    // take cares about align display and if necessary fill with white space
     func lineBoard(n: Int) {
         for _ in 1...n {
             print("+----------------", terminator: "");
@@ -36,6 +39,7 @@ class Board {
         puts("|")
     }
     
+    // display the case id
     func displayNumCase(n: Int, displayCase: inout [String], tmp: inout Int) {
         for _ in 0...n-1 {
             displayCase[tmp] = String(tmp)
@@ -65,7 +69,7 @@ class Board {
         }
     }
     
-    // currentPosPlayer = tab of instr appened
+    // display the instructions in the case
     func displayInstructionPlayer(n: Int,  displayInstr: inout [String], currentInstrPlayer: inout [String], tmp: inout Int) {
         for _ in 0...n-1 {
             spaceWide(array: &displayInstr, index: &tmp)
@@ -73,6 +77,7 @@ class Board {
         }
     }
     
+    // FIXME: remove
     // display if a case is locked or not
     func displayLockCase(n: Int,  displayLock: inout [String], tmp: inout Int) {
         for _ in 0...n-1 {
@@ -92,6 +97,8 @@ class Board {
         }
     }
 
+    // the main function which allows to display the board for each update
+    // the global board is composed by three arrays for represent informations
     func displayBoard(boardInit: inout [String], displayPos: inout [String], displayInstruction: inout [String], H: Int, W: Int, posPlayer: inout [Int], instrPlayer: inout [String], displayLock: inout [String], bd: inout Bool) -> ([String], [String], [Int], Int, Int, [String], [String], [String]) {
         var tmp = 0
         var tmp2 = 0
@@ -111,6 +118,7 @@ class Board {
             lineCompl(n: W, action: "NOJUMP")
             displayLockCase(n: W,  displayLock: &boardLockTmp, tmp: &tmp4)
             puts("|")
+            // check if it's the begining of the game to display or not the initial board
             if (bd) {
                 displayPosBegin(n: W, displayPos: &boardPosTmp, currentPosPlayer: &posPlayerTmp, tmp: &tmp2)
             } else {
