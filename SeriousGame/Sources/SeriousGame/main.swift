@@ -37,7 +37,7 @@ let dechainement2 = "Storm rages on & shuffle"
 
 // definition of objectives
 let objective_countdown: [String] = ["BEGIN", "[VAR] = 10", "WHILE", "[VAR] != 0", "SHOW([VAR])", "[VAR] = [VAR]-1", "ENDWHILE", "END", "BEGIN", "FOR", "[VAR] = 10 TO 0", "SHOW([VAR])", "ENDFOR", "END"]
-let objective_ckeckTeam: [String] = ["BEGIN", "[VAR] = FALSE", "NB_T != LEN(T)", "[VAR] = TRUE", "ENDWHILE", "END", "BEGIN", "IF", "NB_T == LEN(T)", "ENDIF", "END"]
+let objective_ckeckTeam: [String] = ["BEGIN", "[VAR] = FALSE", "WHILE", "NB_T != LEN(T)", "[VAR] = TRUE", "ENDWHILE", "END", "BEGIN", "IF", "NB_T == LEN(T)", "ENDIF", "END"]
 
 // FIXME:
 /*
